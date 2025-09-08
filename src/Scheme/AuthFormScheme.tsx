@@ -1,8 +1,14 @@
 import { z } from 'zod';
 
-const passwordCheck = /^(?=.*\p{L})(?=.*\d)(?=.*[^A-Za-z0-9]).+$/u;
+export const LoginScheme = z.object({
+  email: z.email('Please enter a valid email address'),
+  password: z.string().min(1, { message: 'Password is require' }),
+});
 
-export const AuthFormScheme = z.object({
+export type LoginScheme = z.infer<typeof RegisterScheme>;
+
+const passwordCheck = /^(?=.*\p{L})(?=.*\d)(?=.*[^A-Za-z0-9]).+$/u;
+export const RegisterScheme = z.object({
   email: z.email('Please enter a valid email address'),
   password: z
     .string()
@@ -14,4 +20,4 @@ export const AuthFormScheme = z.object({
     }),
 });
 
-export type AuthFormData = z.infer<typeof AuthFormScheme>;
+export type RegisterScheme = z.infer<typeof RegisterScheme>;
