@@ -3,29 +3,45 @@
 import { useForm } from 'react-hook-form';
 import InputField from '@/components/Inputs/InputsField';
 import ButtonAction from '@/components/Buttons/ButtonAction';
-import { LoginScheme } from '@/Scheme/AuthFormScheme';
+import { LoginScheme, RegisterScheme } from '@/Scheme/AuthFormScheme';
 import { zodResolver } from '@hookform/resolvers/zod';
 import ErrorForm from '@/components/Forms/ErrorForm';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth, logInWithEmailAndPassword } from '@/firebase';
+import {
+  auth,
+  logInWithEmailAndPassword,
+  registerWithEmailAndPassword,
+} from '@/firebase';
 import { useEffect, useState } from 'react';
 import { FirebaseError } from 'firebase/app';
-// import { useRouter } from 'next/navigation';
+import { z } from 'zod';
 
-export default function AuthForm() {
+type AuthFormProps = {
+  form: 'signIn' | 'signUp';
+};
+
+export default function AuthForm({ form }: AuthFormProps) {
+  const schema = form === 'signIn' ? LoginScheme : RegisterScheme;
+  type FormData = z.infer<typeof schema>;
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginScheme>({
-    resolver: zodResolver(LoginScheme),
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
   });
+
   const [user, loading, error] = useAuthState(auth);
   const [authErrors, setAuthErrors] = useState<string | null>(null);
-  // const router = useRouter();
-  const submit = async (data: LoginScheme) => {
+
+  const submit = async (data: FormData) => {
     try {
-      await logInWithEmailAndPassword(data.email, data.password);
+      if (form === 'signIn') {
+        await logInWithEmailAndPassword(data.email, data.password);
+      } else {
+        await registerWithEmailAndPassword(data.email, data.password);
+      }
       setAuthErrors(null);
     } catch (err) {
       if (err instanceof FirebaseError) {
@@ -37,10 +53,7 @@ export default function AuthForm() {
   };
 
   useEffect(() => {
-    if (loading) {
-      return;
-    }
-    if (user && !loading) {
+    if (!loading && user) {
       console.log('user:', user);
       // router.push('/client');
     }
@@ -48,29 +61,32 @@ export default function AuthForm() {
 
   return (
     <form onSubmit={handleSubmit(submit)} noValidate>
-      <h2>Welcome back! Please sign in</h2>
+      <h2>{form === 'signIn' ? 'Welcome back!' : 'Registration'}</h2>
 
       {error && <div>Error authentication failed: {error.message}</div>}
       {authErrors && <div>Error authentication failed: {authErrors}</div>}
 
       <InputField
-        label="Email "
-        id="email "
+        label="Email"
+        id="email"
         autoComplete="email"
         register={register('email')}
       />
-      <ErrorForm field={'email'} rhfErrors={errors.email?.message} />
+      <ErrorForm field="email" rhfErrors={errors.email?.message} />
 
       <InputField
         label="Password"
         id="password"
-        autoComplete="password"
+        autoComplete={form === 'signIn' ? 'current-password' : 'new-password'}
         register={register('password')}
       />
+      <ErrorForm field="password" rhfErrors={errors.password?.message} />
 
-      <ErrorForm field={'password'} rhfErrors={errors.password?.message} />
-
-      <ButtonAction className={''} type="submit" name={'Submit'} />
+      <ButtonAction
+        className=""
+        type="submit"
+        name={form === 'signIn' ? 'Sign In' : 'Sign Up'}
+      />
     </form>
   );
 }
