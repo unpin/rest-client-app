@@ -15,6 +15,7 @@ import {
 import { useEffect, useState } from 'react';
 import { FirebaseError } from 'firebase/app';
 import { z } from 'zod';
+import { useRouter } from 'next/navigation';
 
 type AuthFormProps = {
   form: 'signIn' | 'signUp';
@@ -23,7 +24,7 @@ type AuthFormProps = {
 export default function AuthForm({ form }: AuthFormProps) {
   const schema = form === 'signIn' ? LoginScheme : RegisterScheme;
   type FormData = z.infer<typeof schema>;
-
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -54,36 +55,57 @@ export default function AuthForm({ form }: AuthFormProps) {
 
   useEffect(() => {
     if (!loading && user) {
-      console.log('user:', user);
-      // router.push('/client');
+      router.push('/');
     }
   }, [user, loading]);
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <form onSubmit={handleSubmit(submit)} noValidate>
-      <h2>{form === 'signIn' ? 'Welcome back!' : 'Registration'}</h2>
+    <form
+      onSubmit={handleSubmit(submit)}
+      noValidate
+      className="max-w-md mx-auto bg-white shadow-lg rounded-2xl p-8 space-y-6 border border-gray-200"
+    >
+      <h2 className="text-2xl font-semibold text-gray-800 text-center">
+        {form === 'signIn' ? 'Welcome back!' : 'Registration'}
+      </h2>
 
-      {error && <div>Error authentication failed: {error.message}</div>}
-      {authErrors && <div>Error authentication failed: {authErrors}</div>}
+      {error && (
+        <div className="text-red-600 text-sm bg-gray-50 p-2 rounded-md border border-gray-200">
+          Error authentication failed: {error.message}
+        </div>
+      )}
+      {authErrors && (
+        <div className="text-red-600 text-sm bg-gray-50 p-2 rounded-md border border-gray-200">
+          Error authentication failed: {authErrors}
+        </div>
+      )}
 
-      <InputField
-        label="Email"
-        id="email"
-        autoComplete="email"
-        register={register('email')}
-      />
-      <ErrorForm field="email" rhfErrors={errors.email?.message} />
+      <div className="space-y-2">
+        <InputField
+          label="Email"
+          id="email"
+          autoComplete="email"
+          register={register('email')}
+        />
+        <ErrorForm field="email" rhfErrors={errors.email?.message} />
+      </div>
 
-      <InputField
-        label="Password"
-        id="password"
-        autoComplete={form === 'signIn' ? 'current-password' : 'new-password'}
-        register={register('password')}
-      />
-      <ErrorForm field="password" rhfErrors={errors.password?.message} />
+      <div className="space-y-2">
+        <InputField
+          label="Password"
+          id="password"
+          autoComplete={form === 'signIn' ? 'current-password' : 'new-password'}
+          register={register('password')}
+        />
+        <ErrorForm field="password" rhfErrors={errors.password?.message} />
+      </div>
 
       <ButtonAction
-        className=""
+        className="w-full bg-gray-800 text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition-colors"
         type="submit"
         name={form === 'signIn' ? 'Sign In' : 'Sign Up'}
       />

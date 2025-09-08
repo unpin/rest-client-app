@@ -39,17 +39,9 @@ export default function ErrorForm({
   }
 
   return (
-    <div
-      className="text-danger"
-      style={{
-        fontSize: '0.54rem',
-        minHeight: '1.5rem',
-        maxHeight: '2rem',
-        overflowY: 'auto',
-      }}
-    >
+    <div className="text-red-600 text-xs min-h-[1.5rem] max-h-[2rem] overflow-y-auto">
       {error.map((err, i) => (
-        <p key={i} className="mb-0">
+        <p key={i} className="leading-snug">
           {err}
         </p>
       ))}

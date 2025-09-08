@@ -10,9 +10,5 @@ export default function UnauthorizedLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
-      <body>{children}</body>
-    </html>
-  );
+  return <section className="unauthorized-layout">{children}</section>;
 }
