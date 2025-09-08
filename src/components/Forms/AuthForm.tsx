@@ -6,9 +6,7 @@ import ButtonAction from '@/components/Buttons/ButtonAction';
 import { LoginScheme, RegisterScheme } from '@/Scheme/AuthFormScheme';
 import { zodResolver } from '@hookform/resolvers/zod';
 import ErrorForm from '@/components/Forms/ErrorForm';
-import { useAuthState } from 'react-firebase-hooks/auth';
 import {
-  auth,
   logInWithEmailAndPassword,
   registerWithEmailAndPassword,
 } from '@/firebase';
@@ -16,6 +14,7 @@ import { useEffect, useState } from 'react';
 import { FirebaseError } from 'firebase/app';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/providers/AuthProvider/AuthContext';
 
 type AuthFormProps = {
   form: 'signIn' | 'signUp';
@@ -32,10 +31,8 @@ export default function AuthForm({ form }: AuthFormProps) {
   } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
-
-  const [user, loading, error] = useAuthState(auth);
   const [authErrors, setAuthErrors] = useState<string | null>(null);
-
+  const { user, loading, error } = useAuth();
   const submit = async (data: FormData) => {
     try {
       if (form === 'signIn') {
