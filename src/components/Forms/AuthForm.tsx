@@ -15,7 +15,7 @@ import { FirebaseError } from 'firebase/app';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/providers/AuthProvider/AuthContext';
-
+import { useTranslations } from 'next-intl';
 type AuthFormProps = {
   form: 'signIn' | 'signUp';
 };
@@ -24,6 +24,7 @@ export default function AuthForm({ form }: AuthFormProps) {
   const schema = form === 'signIn' ? LoginScheme : RegisterScheme;
   type FormData = z.infer<typeof schema>;
   const router = useRouter();
+  const t = useTranslations('Auth');
   const {
     register,
     handleSubmit,
@@ -67,7 +68,7 @@ export default function AuthForm({ form }: AuthFormProps) {
       className="max-w-md mx-auto bg-white shadow-lg rounded-2xl p-8 space-y-6 border border-gray-200"
     >
       <h2 className="text-2xl font-semibold text-gray-800 text-center">
-        {form === 'signIn' ? 'Welcome back!' : 'Registration'}
+        {form === 'signIn' ? t('login.subtitle') : t('register.subtitle')}
       </h2>
 
       {error && (
@@ -83,7 +84,7 @@ export default function AuthForm({ form }: AuthFormProps) {
 
       <div className="space-y-2">
         <InputField
-          label="Email"
+          label={t('login.emailLabel')}
           id="email"
           autoComplete="email"
           register={register('email')}
@@ -93,7 +94,7 @@ export default function AuthForm({ form }: AuthFormProps) {
 
       <div className="space-y-2">
         <InputField
-          label="Password"
+          label={t('login.passwordLabel')}
           id="password"
           autoComplete={form === 'signIn' ? 'current-password' : 'new-password'}
           register={register('password')}
@@ -104,7 +105,7 @@ export default function AuthForm({ form }: AuthFormProps) {
       <ButtonAction
         className="w-full bg-gray-800 text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition-colors"
         type="submit"
-        name={form === 'signIn' ? 'Sign In' : 'Sign Up'}
+        name={form === 'signIn' ? t('login.submit') : t('register.submit')}
       />
     </form>
   );

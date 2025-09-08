@@ -1,5 +1,24 @@
 {
   "HomePage": {
     "title": "Hello world!"
+  },
+  "Auth": {
+    "login": {
+      "title": "Sign In",
+      "subtitle": "Welcome back! Please sign in",
+      "emailLabel": "Email",
+      "passwordLabel": "Password",
+      "submit": "Sign In",
+      "noAccount": "Don't have an account?",
+      "goToRegister": "Register"
+    },
+    "register": {
+      "title": "Sign Up",
+      "subtitle": "Create a new account",
+      "confirmPasswordLabel": "Confirm Password",
+      "submit": "Sign Up",
+      "hasAccount": "Already have an account?",
+      "goToLogin": "Sign In"
+    }
   }
 }

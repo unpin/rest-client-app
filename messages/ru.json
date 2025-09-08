@@ -1,5 +1,24 @@
 {
   "HomePage": {
     "title": "Hello world! RU"
+  },
+  "Auth": {
+    "login": {
+      "title": "Вход",
+      "subtitle": "Добро пожаловать! Пожалуйста, войдите в систему",
+      "emailLabel": "Электронная почта",
+      "passwordLabel": "Пароль",
+      "submit": "Войти",
+      "noAccount": "Нет аккаунта?",
+      "goToRegister": "Зарегистрироваться"
+    },
+    "register": {
+      "title": "Регистрация",
+      "subtitle": "Создайте новый аккаунт",
+      "confirmPasswordLabel": "Подтверждение пароля",
+      "submit": "Зарегистрироваться",
+      "hasAccount": "Уже есть аккаунт?",
+      "goToLogin": "Войти"
+    }
   }
 }
