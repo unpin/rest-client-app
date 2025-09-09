@@ -19,13 +19,13 @@ import {
 
 // For Firebase JS SDK v7.20.0  later, measurementId is optional
 const firebaseConfig = {
-  apiKey: 'AIzaSyCBXGIyuJzsLSTS5RIaT2yEnHHUpTMKf4M',
-  authDomain: 'rest-client-app-26aa5.firebaseapp.com',
-  projectId: 'rest-client-app-26aa5',
-  storageBucket: 'rest-client-app-26aa5.firebasestorage.app',
-  messagingSenderId: '874228828900',
-  appId: '1:874228828900:web:a70dd02de5342c5d18faf1',
-  measurementId: 'G-J1EQ7CVLNZ',
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
