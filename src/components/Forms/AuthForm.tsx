@@ -2,7 +2,6 @@
 
 import { useForm } from 'react-hook-form';
 import InputField from '@/components/Inputs/InputsField';
-import ButtonAction from '@/components/Buttons/ButtonAction';
 import { LoginScheme, RegisterScheme } from '@/Scheme/AuthFormScheme';
 import { zodResolver } from '@hookform/resolvers/zod';
 import ErrorForm from '@/components/Forms/ErrorForm';
@@ -16,6 +15,7 @@ import { z } from 'zod';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/providers/AuthProvider/AuthContext';
 import { useTranslations } from 'next-intl';
+import AuthButton from '@/components/Buttons/AuthButton';
 type AuthFormProps = {
   form: 'signIn' | 'signUp';
 };
@@ -102,11 +102,7 @@ export default function AuthForm({ form }: AuthFormProps) {
         <ErrorForm field="password" rhfErrors={errors.password?.message} />
       </div>
 
-      <ButtonAction
-        className="w-full bg-gray-800 text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition-colors"
-        type="submit"
-        name={form === 'signIn' ? t('login.submit') : t('register.submit')}
-      />
+      <AuthButton form={form} />
     </form>
   );
 }

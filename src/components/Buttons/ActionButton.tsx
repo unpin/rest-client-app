@@ -3,15 +3,15 @@
 type ButtonProps = {
   type?: 'button' | 'submit' | 'reset';
   onClick?: () => void;
-  name: string;
+  label: string;
   className?: string;
   disabled?: boolean;
 };
 
-export default function ButtonAction({
+export default function ActionButton({
   type = 'button',
   onClick,
-  name,
+  label,
   className = '',
   disabled = false,
 }: ButtonProps) {
@@ -22,7 +22,7 @@ export default function ButtonAction({
       onClick={onClick}
       disabled={disabled}
     >
-      {name}
+      {label}
     </button>
   );
 }
