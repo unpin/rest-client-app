@@ -19,6 +19,9 @@
       "submit": "Sign Up",
       "hasAccount": "Already have an account?",
       "goToLogin": "Sign In"
+    },
+    "common": {
+      "logout": "Sign Out"
     }
   }
 }
