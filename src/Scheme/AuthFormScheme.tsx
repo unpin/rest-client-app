@@ -4,7 +4,7 @@ const passwordCheck = /^(?=.*\p{L})(?=.*\d)(?=.*[^A-Za-z0-9]).+$/u;
 const LoginScheme = (t: (key: string) => string) => {
   return z.object({
     email: z.email({ message: t('errors.email') }),
-    password: z.string().min(1, { message: t('errors.passwordComplexity') }),
+    password: z.string().min(1, { message: t('errors.passwordEmpty') }),
   });
 };
 const RegisterScheme = (t: (key: string) => string) => {
