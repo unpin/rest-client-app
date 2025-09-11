@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Nav from './Nav';
+import Link from 'next/link';
 
 type HeaderProps = {
   scrolled: boolean;
@@ -19,7 +20,9 @@ export default function Header({ scrolled }: HeaderProps) {
             scrolled ? 'scale-90' : 'scale-100'
           }`}
         >
-          <Image width={48} height={48} src="/logo.png" alt="logo" />
+          <Link href={'/'}>
+            <Image width={48} height={48} src="/logo.png" alt="logo" />
+          </Link>
         </div>
         <Nav />
       </div>
