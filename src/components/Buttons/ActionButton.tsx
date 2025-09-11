@@ -1,7 +1,7 @@
 'use client';
 
 type ButtonProps = {
-  type?: 'button' | 'submit' | 'reset';
+  type?: HTMLButtonElement['type'];
   onClick?: () => void;
   label: string;
   className?: string;
