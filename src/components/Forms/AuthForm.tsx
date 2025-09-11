@@ -16,15 +16,16 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/providers/AuthProvider/AuthContext';
 import { useTranslations } from 'next-intl';
 import AuthButton from '@/components/Buttons/AuthButton';
+import Link from 'next/link';
 type AuthFormProps = {
   form: 'signIn' | 'signUp';
 };
 
 export default function AuthForm({ form }: AuthFormProps) {
-  const schema = form === 'signIn' ? LoginScheme : RegisterScheme;
+  const t = useTranslations('Auth');
+  const schema = form === 'signIn' ? LoginScheme(t) : RegisterScheme(t);
   type FormData = z.infer<typeof schema>;
   const router = useRouter();
-  const t = useTranslations('Auth');
   const {
     register,
     handleSubmit,
@@ -44,7 +45,7 @@ export default function AuthForm({ form }: AuthFormProps) {
       setAuthErrors(null);
     } catch (err) {
       if (err instanceof FirebaseError) {
-        setAuthErrors(err.message);
+        setAuthErrors(err.code);
       } else {
         setAuthErrors('Something went wrong');
       }
@@ -60,12 +61,13 @@ export default function AuthForm({ form }: AuthFormProps) {
   if (loading) {
     return <div>Loading...</div>;
   }
+  console.log('error', error, 'authErrors', authErrors);
 
   return (
     <form
       onSubmit={handleSubmit(submit)}
       noValidate
-      className="max-w-md mx-auto bg-white shadow-lg rounded-2xl p-8 space-y-6 border border-gray-200"
+      className="w-[480px] bg-white shadow-xl rounded-2xl p-10 space-y-8 border border-gray-200"
     >
       <h2 className="text-2xl font-semibold text-gray-800 text-center">
         {form === 'signIn' ? t('login.subtitle') : t('register.subtitle')}
@@ -73,12 +75,12 @@ export default function AuthForm({ form }: AuthFormProps) {
 
       {error && (
         <div className="text-red-600 text-sm bg-gray-50 p-2 rounded-md border border-gray-200">
-          Error authentication failed: {error.message}
+          {t('errors.authFailed')}: {error.message}
         </div>
       )}
       {authErrors && (
         <div className="text-red-600 text-sm bg-gray-50 p-2 rounded-md border border-gray-200">
-          Error authentication failed: {authErrors}
+          {t(`errors.${authErrors.slice(5)}`)}
         </div>
       )}
 
@@ -103,6 +105,29 @@ export default function AuthForm({ form }: AuthFormProps) {
       </div>
 
       <AuthButton form={form} />
+      <div className="text-center text-sm text-gray-600">
+        {form === 'signUp' ? (
+          <>
+            {t('register.hasAccount')}{' '}
+            <Link
+              href="/auth/signin"
+              className="text-blue-600 hover:underline font-medium"
+            >
+              {t('register.goToLogin')}
+            </Link>
+          </>
+        ) : (
+          <>
+            {t('login.noAccount')}{' '}
+            <Link
+              href="/auth/signup"
+              className="text-blue-600 hover:underline font-medium"
+            >
+              {t('login.goToRegister')}
+            </Link>
+          </>
+        )}
+      </div>
     </form>
   );
 }

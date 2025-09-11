@@ -20,6 +20,17 @@
       "hasAccount": "Already have an account?",
       "goToLogin": "Sign In"
     },
+    "errors": {
+      "email": "Please enter a valid email address",
+      "passwordMin": "Password must be at least 8 characters long",
+      "passwordEmpty": "Password is required",
+      "passwordMax": "Password must not exceed 20 characters",
+      "passwordComplexity": "Password must include uppercase, lowercase, number, and special character",
+      "authFailed": "Authentication failed: {message}",
+      "invalid-credential": "Wrong username/password ",
+      "too-many-requests": "Too many login attempts. Your account has been temporarily disabled. Please try again later or reset your password.",
+      "email-already-in-use": "This email address is already registered. Use another one or log in to your existing account."
+    },
     "common": {
       "logout": "Sign Out",
       "main": "Main Page"

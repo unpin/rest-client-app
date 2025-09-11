@@ -5,7 +5,7 @@ import type { UseFormRegisterReturn } from 'react-hook-form';
 interface InputFieldProps {
   label: string;
   name?: string;
-  type?: string;
+  type?: HTMLInputElement['type'];
   id?: string;
   defaultValue?: string;
   accept?: string;
