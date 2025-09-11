@@ -2,7 +2,7 @@ import ActionButton from '@/components/Buttons/ActionButton';
 import { useTranslations } from 'next-intl';
 
 type AuthButtonProps = {
-  form: 'signIn' | 'signUp' | 'signOut';
+  form: 'signIn' | 'signUp' | 'signOut' | 'main';
   disabled?: boolean;
   onClick?: () => void;
 };
@@ -13,6 +13,7 @@ export default function AuthButton({ form, onClick }: AuthButtonProps) {
     signIn: t('login.submit'),
     signUp: t('register.submit'),
     signOut: t('common.logout'),
+    main: t('common.main'),
   };
 
   const label = labels[form];

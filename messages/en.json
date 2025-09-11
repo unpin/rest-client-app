@@ -21,7 +21,8 @@
       "goToLogin": "Sign In"
     },
     "common": {
-      "logout": "Sign Out"
+      "logout": "Sign Out",
+      "main": "Main Page"
     }
   }
 }
