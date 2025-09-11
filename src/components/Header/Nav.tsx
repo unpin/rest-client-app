@@ -1,9 +1,9 @@
 'use client';
 
-import AuthButton from '@/components/Buttons/AuthButton';
-import { useAuth } from '@/providers/AuthProvider/AuthContext';
 import { useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/providers/AuthProvider/AuthContext';
+import AuthButton from '@/components/Buttons/AuthButton';
 import { logout } from '@/firebase';
 
 export default function Nav() {

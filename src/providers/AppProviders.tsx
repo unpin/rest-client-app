@@ -1,13 +1,13 @@
 import { NextIntlClientProvider } from 'next-intl';
 import { ThemeProvider } from './theme/ThemeProvider';
 import { AuthProvider } from '@/providers/AuthProvider/AuthProvider';
-import Header from '@/components/Header/Header';
+import StickyHeader from '@/components/Header/StickyHeader';
 
 export default function AppProviders({ children }: React.PropsWithChildren) {
   return (
     <NextIntlClientProvider>
       <AuthProvider>
-        <Header />
+        <StickyHeader />
         <ThemeProvider>{children}</ThemeProvider>
       </AuthProvider>
     </NextIntlClientProvider>
