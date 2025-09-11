@@ -21,10 +21,10 @@ type AuthFormProps = {
 };
 
 export default function AuthForm({ form }: AuthFormProps) {
-  const schema = form === 'signIn' ? LoginScheme : RegisterScheme;
+  const t = useTranslations('Auth');
+  const schema = form === 'signIn' ? LoginScheme(t) : RegisterScheme(t);
   type FormData = z.infer<typeof schema>;
   const router = useRouter();
-  const t = useTranslations('Auth');
   const {
     register,
     handleSubmit,
