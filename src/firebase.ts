@@ -1,4 +1,4 @@
-import { FirebaseError, initializeApp } from 'firebase/app';
+import { initializeApp } from 'firebase/app';
 import {
   GoogleAuthProvider,
   getAuth,
@@ -45,7 +45,7 @@ const signInWithGoogle = async () => {
       });
     }
   } catch (err) {
-    if (err instanceof FirebaseError) console.error(err);
+    console.error(err);
   }
 };
 const logInWithEmailAndPassword = async (email: string, password: string) => {
@@ -70,7 +70,8 @@ const registerWithEmailAndPassword = async (
       email,
     });
   } catch (err) {
-    if (err instanceof FirebaseError) console.error(err);
+    console.error(err);
+    throw err;
   }
 };
 const sendPasswordReset = async (email: string) => {
@@ -78,7 +79,8 @@ const sendPasswordReset = async (email: string) => {
     await sendPasswordResetEmail(auth, email);
     alert('Password reset link sent!');
   } catch (err) {
-    if (err instanceof FirebaseError) console.error(err);
+    console.error(err);
+    throw err;
   }
 };
 const logout = async (): Promise<void> => {

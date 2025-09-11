@@ -44,7 +44,7 @@ export default function AuthForm({ form }: AuthFormProps) {
       setAuthErrors(null);
     } catch (err) {
       if (err instanceof FirebaseError) {
-        setAuthErrors(err.message);
+        setAuthErrors(err.code);
       } else {
         setAuthErrors('Something went wrong');
       }
@@ -60,12 +60,13 @@ export default function AuthForm({ form }: AuthFormProps) {
   if (loading) {
     return <div>Loading...</div>;
   }
+  console.log('error', error, 'authErrors', authErrors);
 
   return (
     <form
       onSubmit={handleSubmit(submit)}
       noValidate
-      className="max-w-md mx-auto bg-white shadow-lg rounded-2xl p-8 space-y-6 border border-gray-200"
+      className="w-[480px] bg-white shadow-xl rounded-2xl p-10 space-y-8 border border-gray-200"
     >
       <h2 className="text-2xl font-semibold text-gray-800 text-center">
         {form === 'signIn' ? t('login.subtitle') : t('register.subtitle')}
@@ -73,12 +74,12 @@ export default function AuthForm({ form }: AuthFormProps) {
 
       {error && (
         <div className="text-red-600 text-sm bg-gray-50 p-2 rounded-md border border-gray-200">
-          Error authentication failed: {error.message}
+          {t('errors.authFailed')}: {error.message}
         </div>
       )}
       {authErrors && (
         <div className="text-red-600 text-sm bg-gray-50 p-2 rounded-md border border-gray-200">
-          Error authentication failed: {authErrors}
+          {t(`errors.${authErrors.slice(5)}`)}
         </div>
       )}
 
