@@ -1,4 +1,4 @@
-import { initializeApp } from 'firebase/app';
+import { FirebaseError, initializeApp } from 'firebase/app';
 import {
   GoogleAuthProvider,
   getAuth,
@@ -17,7 +17,6 @@ import {
   addDoc,
 } from 'firebase/firestore';
 
-// For Firebase JS SDK v7.20.0  later, measurementId is optional
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -46,11 +45,10 @@ const signInWithGoogle = async () => {
       });
     }
   } catch (err) {
-    console.error(err);
-    alert(err.message);
+    if (err instanceof FirebaseError) console.error(err);
   }
 };
-const logInWithEmailAndPassword = async (email, password) => {
+const logInWithEmailAndPassword = async (email: string, password: string) => {
   try {
     const res = await signInWithEmailAndPassword(auth, email, password);
     return res.user;
@@ -59,7 +57,10 @@ const logInWithEmailAndPassword = async (email, password) => {
     throw err;
   }
 };
-const registerWithEmailAndPassword = async (email, password) => {
+const registerWithEmailAndPassword = async (
+  email: string,
+  password: string
+) => {
   try {
     const res = await createUserWithEmailAndPassword(auth, email, password);
     const user = res.user;
@@ -69,21 +70,19 @@ const registerWithEmailAndPassword = async (email, password) => {
       email,
     });
   } catch (err) {
-    console.error(err);
-    alert(err.message);
+    if (err instanceof FirebaseError) console.error(err);
   }
 };
-const sendPasswordReset = async (email) => {
+const sendPasswordReset = async (email: string) => {
   try {
     await sendPasswordResetEmail(auth, email);
     alert('Password reset link sent!');
   } catch (err) {
-    console.error(err);
-    alert(err.message);
+    if (err instanceof FirebaseError) console.error(err);
   }
 };
-const logout = () => {
-  signOut(auth);
+const logout = async (): Promise<void> => {
+  await signOut(auth);
 };
 export {
   auth,
