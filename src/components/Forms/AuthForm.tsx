@@ -16,6 +16,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/providers/AuthProvider/AuthContext';
 import { useTranslations } from 'next-intl';
 import AuthButton from '@/components/Buttons/AuthButton';
+import Link from 'next/link';
 type AuthFormProps = {
   form: 'signIn' | 'signUp';
 };
@@ -104,6 +105,29 @@ export default function AuthForm({ form }: AuthFormProps) {
       </div>
 
       <AuthButton form={form} />
+      <div className="text-center text-sm text-gray-600">
+        {form === 'signUp' ? (
+          <>
+            {t('register.hasAccount')}{' '}
+            <Link
+              href="/auth/signin"
+              className="text-blue-600 hover:underline font-medium"
+            >
+              {t('register.goToLogin')}
+            </Link>
+          </>
+        ) : (
+          <>
+            {t('login.noAccount')}{' '}
+            <Link
+              href="/auth/signup"
+              className="text-blue-600 hover:underline font-medium"
+            >
+              {t('login.goToRegister')}
+            </Link>
+          </>
+        )}
+      </div>
     </form>
   );
 }
