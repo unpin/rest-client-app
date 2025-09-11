@@ -21,7 +21,7 @@ export default function AuthButton({ form, onClick }: AuthButtonProps) {
 
   return (
     <ActionButton
-      className="w-full min-w-[140px] bg-gray-800 text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition-colors whitespace-nowrap"
+      className="btn-action"
       type={type}
       label={label}
       onClick={onClick}

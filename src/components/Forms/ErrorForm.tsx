@@ -1,10 +1,11 @@
 import type { FieldError, FieldErrorsImpl, Merge } from 'react-hook-form';
-import type { ZodFormattedError } from 'zod';
+import { z, ZodFormattedError } from 'zod';
 import { RegisterScheme } from '@/Scheme/AuthFormScheme';
 
+type RegisterFormData = z.infer<typeof RegisterScheme>;
 type FormErrorProps = {
-  dataError?: ZodFormattedError<RegisterScheme>;
-  field: keyof RegisterScheme;
+  dataError?: ZodFormattedError<RegisterFormData>;
+  field: keyof RegisterFormData;
   rhfErrors?:
     | string
     | string[]

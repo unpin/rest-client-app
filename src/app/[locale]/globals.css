@@ -24,3 +24,12 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+.btn-action {
+  @apply w-full sm:w-auto min-w-[100px] sm:min-w-[180px]
+  bg-gray-800 text-white py-2 px-4 rounded-lg
+  hover:bg-gray-700 transition-colors whitespace-nowrap;
+}
+
+.error-auth {
+  @apply text-red-600 text-sm bg-gray-50 p-2 rounded-md border border-gray-200;
+}

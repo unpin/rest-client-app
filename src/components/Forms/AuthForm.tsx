@@ -74,14 +74,12 @@ export default function AuthForm({ form }: AuthFormProps) {
       </h2>
 
       {error && (
-        <div className="text-red-600 text-sm bg-gray-50 p-2 rounded-md border border-gray-200">
+        <div className="error-auth">
           {t('errors.authFailed')}: {error.message}
         </div>
       )}
       {authErrors && (
-        <div className="text-red-600 text-sm bg-gray-50 p-2 rounded-md border border-gray-200">
-          {t(`errors.${authErrors.slice(5)}`)}
-        </div>
+        <div className="error-auth">{t(`errors.${authErrors.slice(5)}`)}</div>
       )}
 
       <div className="space-y-2">
