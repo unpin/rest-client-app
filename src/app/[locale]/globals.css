@@ -24,6 +24,7 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
 .btn-action {
   @apply w-full sm:w-auto min-w-[100px] sm:min-w-[140px]
   bg-gray-800 text-white py-2 px-4 rounded-lg
@@ -42,4 +43,59 @@ body {
   px-5 py-2 text-gray-600 placeholder-gray-300
   focus:border-gray-300 focus:ring-1 focus:ring-gray-200
   outline-none transition;
+}
+
+.button-method {
+  @apply flex items-center gap-8 rounded hover:bg-gray-800 py-2 px-4 border-0 font-semibold cursor-pointer;
+}
+
+.methods-dropdown {
+  @apply rounded absolute top-full bg-gray-800;
+}
+
+.methods-list {
+  @apply p-1 flex flex-col gap-1;
+}
+
+.methods-list-item {
+  @apply font-semibold px-4 py-2 cursor-pointer rounded hover:bg-gray-800;
+}
+
+.methods-list-item.selected {
+  @apply bg-gray-800 rounded;
+}
+
+.button-method .get,
+.methods-list-item.get {
+  @apply text-green-500;
+}
+
+.button-method .post,
+.methods-list-item.post {
+  @apply text-orange-300;
+}
+
+.button-method .put,
+.methods-list-item.put {
+  @apply text-blue-400;
+}
+
+.button-method .patch,
+.methods-list-item.patch {
+  @apply text-teal-400;
+}
+
+.button-method .delete,
+.methods-list-item.delete {
+  @apply text-red-300;
+}
+
+.button-method .head,
+.methods-list-item.head {
+  @apply text-green-500;
+}
+
+.button-method .options,
+.methods-list-item.options {
+  @apply text-purple-500;
 }
