@@ -1,6 +1,8 @@
 {
-  "HomePage": {
-    "title": "Hello world! RU"
+  "MainPage": {
+    "title": "Добро пожаловать в REST Client App",
+    "titleLogin": "Добро пожаловать",
+    "subtitle": "Пожалуйста, войдите или зарегистрируйтесь, чтобы продолжить"
   },
   "Auth": {
     "login": {
