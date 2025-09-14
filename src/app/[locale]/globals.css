@@ -20,7 +20,7 @@
 }
 
 body {
-  background: var(--background);
+  @apply bg-gray-950;
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
@@ -67,7 +67,7 @@ body {
 
 .button-method .get,
 .methods-list-item.get {
-  @apply text-green-500;
+  @apply text-green-300;
 }
 
 .button-method .post,
@@ -82,7 +82,7 @@ body {
 
 .button-method .patch,
 .methods-list-item.patch {
-  @apply text-teal-400;
+  @apply text-purple-300;
 }
 
 .button-method .delete,
@@ -92,10 +92,38 @@ body {
 
 .button-method .head,
 .methods-list-item.head {
-  @apply text-green-500;
+  @apply text-green-300;
 }
 
 .button-method .options,
 .methods-list-item.options {
   @apply text-purple-500;
+}
+
+.table {
+  @apply w-full table-auto border-separate border-spacing-0 rounded text-left border border-gray-800;
+}
+
+.table-header .table-cell {
+  @apply px-2 py-2 bg-gray-800;
+}
+
+.table-body .table-cell:not(:first-of-type) {
+  @apply border-l-1 border-l-gray-800;
+}
+
+.table-body .tr:not(:first-of-type) {
+  @apply border-t-1 border-t-gray-800;
+}
+
+.table-body .tr:nth-of-type(even) .table-cell {
+  @apply bg-white/2;
+}
+
+.form-input {
+  @apply w-full px-2 py-2 focus:bg-gray-800 text-gray-200 transition-all focus:outline-none focus:ring-1 focus:ring-blue-500 rounded;
+}
+
+.button-body-mode {
+  @apply px-6 py-0.5 rounded font-medium text-sm text-gray-300 hover:text-gray-200 cursor-pointer transition-all;
 }
