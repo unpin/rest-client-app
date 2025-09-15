@@ -1,9 +1,14 @@
 'use client';
 
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, {
+  PropsWithChildren,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from 'react';
 import { Theme, ThemeContext } from './ThemeContext';
 
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
+export function ThemeProvider({ children }: PropsWithChildren) {
   const [theme, setTheme] = useState<Theme>('dark');
 
   useLayoutEffect(() => {
