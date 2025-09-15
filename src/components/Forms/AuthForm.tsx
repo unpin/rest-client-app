@@ -64,24 +64,18 @@ export default function AuthForm({ form }: AuthFormProps) {
   console.log('error', error, 'authErrors', authErrors);
 
   return (
-    <form
-      onSubmit={handleSubmit(submit)}
-      noValidate
-      className="w-[480px] bg-white shadow-xl rounded-2xl p-10 space-y-8 border border-gray-200"
-    >
+    <form onSubmit={handleSubmit(submit)} noValidate className="form">
       <h2 className="text-2xl font-semibold text-gray-800 text-center">
         {form === 'signIn' ? t('login.subtitle') : t('register.subtitle')}
       </h2>
 
       {error && (
-        <div className="text-red-600 text-sm bg-gray-50 p-2 rounded-md border border-gray-200">
+        <div className="error-auth">
           {t('errors.authFailed')}: {error.message}
         </div>
       )}
       {authErrors && (
-        <div className="text-red-600 text-sm bg-gray-50 p-2 rounded-md border border-gray-200">
-          {t(`errors.${authErrors.slice(5)}`)}
-        </div>
+        <div className="error-auth">{t(`errors.${authErrors.slice(5)}`)}</div>
       )}
 
       <div className="space-y-2">
@@ -91,7 +85,7 @@ export default function AuthForm({ form }: AuthFormProps) {
           autoComplete="email"
           register={register('email')}
         />
-        <ErrorForm field="email" rhfErrors={errors.email?.message} />
+        <ErrorForm message={errors.email?.message} />
       </div>
 
       <div className="space-y-2">
@@ -101,7 +95,7 @@ export default function AuthForm({ form }: AuthFormProps) {
           autoComplete={form === 'signIn' ? 'current-password' : 'new-password'}
           register={register('password')}
         />
-        <ErrorForm field="password" rhfErrors={errors.password?.message} />
+        <ErrorForm message={errors.password?.message} />
       </div>
 
       <AuthButton form={form} />

@@ -34,15 +34,14 @@ export default function InputField(props: InputFieldProps) {
         {label}
       </label>
       <input
-        className="w-full rounded-full border border-gray-300 bg-white px-4 py-2 text-gray-900 
-                   placeholder-gray-400 focus:border-gray-500 focus:ring-1 focus:ring-gray-400 
-                   outline-none transition"
+        className="input-field"
         type={type || 'text'}
         id={inputId}
         name={fieldName}
         defaultValue={defaultValue}
         accept={accept}
         autoComplete={autoComplete}
+        placeholder={label}
         {...register}
       />
     </div>

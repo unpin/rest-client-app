@@ -30,6 +30,10 @@
       "invalid-credential": "Wrong username/password ",
       "too-many-requests": "Too many login attempts. Your account has been temporarily disabled. Please try again later or reset your password.",
       "email-already-in-use": "This email address is already registered. Use another one or log in to your existing account."
+    },
+    "common": {
+      "logout": "Sign Out",
+      "main": "Main Page"
     }
   }
 }
