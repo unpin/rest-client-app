@@ -61,8 +61,6 @@ export default function AuthForm({ form }: AuthFormProps) {
   if (loading) {
     return <div>Loading...</div>;
   }
-  console.log('error', error, 'authErrors', authErrors);
-
   return (
     <form onSubmit={handleSubmit(submit)} noValidate className="form">
       <h2 className="text-2xl font-semibold text-gray-800 text-center">
