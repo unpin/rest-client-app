@@ -311,7 +311,7 @@ export default function ClientContainer({
         ) : response ? (
           <div className="flex flex-col gap-4">
             <div
-              className={`font-mono text-sm px-2 py-1 self-start rounded ${
+              className={`font-mono font-semibold text-sm px-2 py-1 self-start rounded ${
                 response.status >= 200 && response.status < 300
                   ? 'bg-green-800 text-green-200'
                   : 'bg-red-800 text-red-200'
