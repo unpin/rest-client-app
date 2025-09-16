@@ -66,6 +66,8 @@ export default function ClientContainer({
   const [bodyMode, setBodyMode] = useState<BodyMode>('json');
   const [prettifyError, setPrettifyError] = useState<string | null>(null);
   const [selectedMethod, setSelectedMethod] = useState<Method>(initialMethod);
+  const [response, setResponse] = useState<Response | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [headers, setHeaders] = useState<{ key: string; value: string }[]>(
     () => {
       const parsedHeaders = parseHeadersFromSearchParams(
@@ -88,7 +90,7 @@ export default function ClientContainer({
     }
   };
 
-  const handleSend = (e: FormEvent<HTMLFormElement>) => {
+  const handleSend = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const params = new URLSearchParams();
@@ -105,6 +107,39 @@ export default function ClientContainer({
     if (base64Body) newPath += `/${base64Body}`;
     const query = params.toString() ? `?${params.toString()}` : '';
     router.replace(`${newPath}${query}`);
+
+    setIsLoading(true);
+    setResponse(null);
+
+    const requestHeaders = headers.reduce(
+      (acc, { key, value }) => {
+        if (key) acc[key] = value;
+        return acc;
+      },
+      {} as Record<string, string>
+    );
+
+    try {
+      const res = await fetch('/api/proxy', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          url,
+          method: selectedMethod.method,
+          headers: requestHeaders,
+          body,
+        }),
+      });
+
+      const data = await res.json();
+      setResponse(data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const updateHeader = (idx: number, field: string, value: string) => {
@@ -266,13 +301,46 @@ export default function ClientContainer({
             )}
           </div>
         </div>
-        <h3 className="font-semibold text-lg text-gray-200">Code</h3>
-        <h3 className="font-semibold text-lg text-gray-200">Response</h3>
-        <div className="border border-gray-800 rounded">
-          <div className="text-gray-400 text-center p-8">
-            Enter the URL and click SEND to get a response
+
+        <h3 className="font-semibold text-lg text-gray-200">Code examples</h3>
+        <div>{/* TODO: Code examples */}</div>
+
+        <h4 className="font-semibold text-lg text-gray-200">Response</h4>
+        {isLoading ? (
+          <div className="text-gray-400">Loading...</div>
+        ) : response ? (
+          <div className="flex flex-col gap-4">
+            <div
+              className={`font-mono text-sm px-2 py-1 self-start rounded ${
+                response.status >= 200 && response.status < 300
+                  ? 'bg-green-800 text-green-200'
+                  : 'bg-red-800 text-red-200'
+              }`}
+            >
+              {response.status} {response.statusText}
+            </div>
+            <div>
+              <h4 className="font-semibold text-gray-300">Headers</h4>
+              <pre className="text-sm bg-gray-800 p-2 rounded overflow-x-auto">
+                {JSON.stringify(response.headers, null, 2)}
+              </pre>
+            </div>
+            <div>
+              <h4 className="font-semibold text-gray-300">Body</h4>
+              <pre className="text-sm bg-gray-800 p-2 rounded overflow-x-auto">
+                {typeof response.body === 'object'
+                  ? JSON.stringify(response.body, null, 2)
+                  : response.body}
+              </pre>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="border border-gray-800 rounded">
+            <div className="text-gray-400 text-center p-8">
+              Enter the URL and click SEND to get a response
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
