@@ -27,7 +27,7 @@ export default function RequestBar({
       >
         Send
         <span className="fill-gray-200">
-          <PaperPlaneRight size={18} />
+          <PaperPlaneRight size={14} />
         </span>
       </button>
     </form>
