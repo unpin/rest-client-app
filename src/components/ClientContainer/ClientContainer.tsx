@@ -4,7 +4,7 @@ import MethodDropdown, {
   type Method,
 } from '@/components/MethodDropdown/MethodDropdown';
 import RequestBar from '@/components/RequestBar/RequestBar';
-import { usePathname, useRouter } from '@/i18n/navigation';
+import { useRouter } from '@/i18n/navigation';
 import { useSearchParams } from 'next/navigation';
 import { FormEvent, useRef, useState } from 'react';
 import { MagicWand, Trash } from '../Icon/Icon';
@@ -57,13 +57,12 @@ export default function ClientContainer({
   initialUrl,
   initialBody,
 }: ClientContainerProps) {
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [url, setUrl] = useState(fromBase64(decodeURIComponent(initialUrl)));
   const [body, setBody] = useState(fromBase64(decodeURIComponent(initialBody)));
   const [bodyMode, setBodyMode] = useState<'json' | 'text'>('json');
   const [prettifyError, setPrettifyError] = useState<string | null>(null);
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const router = useRouter();
   const [selectedMethod, setSelectedMethod] = useState<Method>(initialMethod);
   const [headers, setHeaders] = useState<{ key: string; value: string }[]>(
     () => {
@@ -74,6 +73,7 @@ export default function ClientContainer({
       return [{ key: '', value: '' }];
     }
   );
+  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
 
   const prettifyBody = () => {
     if (bodyMode === 'json') {
@@ -84,19 +84,6 @@ export default function ClientContainer({
         setPrettifyError('Invalid JSON');
       }
     }
-  };
-
-  const updateBodyInUrl = () => {
-    const params = new URLSearchParams();
-    headers.forEach(({ key, value }) => {
-      params.set(key, value);
-    });
-    const base64Url = toBase64(url);
-    const base64Body = body ? toBase64(body) : undefined;
-    let newPath = `/client/${selectedMethod.method}/${base64Url}`;
-    if (base64Body) newPath += `/${base64Body}`;
-    const query = params.toString() ? `?${params.toString()}` : '';
-    router.replace(`${newPath}${query}`);
   };
 
   const handleSend = (e: FormEvent<HTMLFormElement>) => {
@@ -110,9 +97,7 @@ export default function ClientContainer({
     });
 
     const base64Url = toBase64(url);
-    const base64Body = body
-      ? toBase64(typeof body === 'string' ? body : JSON.stringify(body))
-      : undefined;
+    const base64Body = body ? toBase64(body) : undefined;
 
     let newPath = `/client/${selectedMethod.method}/${base64Url}`;
     if (base64Body) newPath += `/${base64Body}`;
@@ -136,30 +121,13 @@ export default function ClientContainer({
 
   const handleMethodChange = (newMethod: Method) => {
     setSelectedMethod(newMethod);
-
-    const methodRegex = /\/client\/[A-Z]+/;
-    const newPath = pathname.replace(
-      methodRegex,
-      `/client/${newMethod.method}`
-    );
-
-    const search = searchParams.toString();
-    console.log('path', newPath + search);
-
-    router.replace(`${newPath}?${search}`);
   };
-
-  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
 
   function handleEditorDidMount(
     editor: monaco.editor.IStandaloneCodeEditor,
     monacoInstance: typeof monaco
   ) {
     editorRef.current = editor;
-
-    editor.onDidBlurEditorText(() => {
-      updateBodyInUrl();
-    });
 
     monacoInstance.editor.defineTheme('dark-gray', {
       base: 'vs-dark',
