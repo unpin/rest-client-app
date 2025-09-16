@@ -17,6 +17,8 @@ type ClientContainerProps = {
   initialBody: string;
 };
 
+type BodyMode = 'json' | 'text';
+
 function parseHeadersFromSearchParams(
   searchParams: string
 ): { key: string; value: string }[] {
@@ -61,7 +63,7 @@ export default function ClientContainer({
   const router = useRouter();
   const [url, setUrl] = useState(fromBase64(decodeURIComponent(initialUrl)));
   const [body, setBody] = useState(fromBase64(decodeURIComponent(initialBody)));
-  const [bodyMode, setBodyMode] = useState<'json' | 'text'>('json');
+  const [bodyMode, setBodyMode] = useState<BodyMode>('json');
   const [prettifyError, setPrettifyError] = useState<string | null>(null);
   const [selectedMethod, setSelectedMethod] = useState<Method>(initialMethod);
   const [headers, setHeaders] = useState<{ key: string; value: string }[]>(
@@ -123,10 +125,10 @@ export default function ClientContainer({
     setSelectedMethod(newMethod);
   };
 
-  function handleEditorDidMount(
+  const handleEditorDidMount = (
     editor: monaco.editor.IStandaloneCodeEditor,
     monacoInstance: typeof monaco
-  ) {
+  ) => {
     editorRef.current = editor;
 
     monacoInstance.editor.defineTheme('dark-gray', {
@@ -138,7 +140,17 @@ export default function ClientContainer({
       },
     });
     monacoInstance.editor.setTheme('dark-gray');
-  }
+  };
+
+  const handleBodyModeChange = (mode: BodyMode) => {
+    setPrettifyError(null);
+    setBodyMode(mode);
+  };
+
+  const handleBodyChange = (value: string) => {
+    setPrettifyError(null);
+    setBody(value ?? '');
+  };
 
   return (
     <div className="max-w-6xl mx-auto min-h-[300px] p-4 rounded bg-gray-900">
@@ -211,32 +223,32 @@ export default function ClientContainer({
               <button
                 type="button"
                 className={`button-body-mode ${bodyMode === 'json' ? 'bg-blue-500 hover:bg-blue-400' : 'hover:bg-gray-700'}`}
-                onClick={() => setBodyMode('json')}
+                onClick={() => handleBodyModeChange('json')}
               >
                 JSON
               </button>
               <button
                 type="button"
                 className={`button-body-mode ${bodyMode === 'text' ? 'bg-blue-500 hover:bg-blue-400' : 'hover:bg-gray-700'}`}
-                onClick={() => setBodyMode('text')}
+                onClick={() => handleBodyModeChange('text')}
               >
                 Text
               </button>
             </div>
-            <Editor
-              className="rounded overflow-hidden"
-              height="300px"
-              defaultLanguage={bodyMode}
-              language={bodyMode}
-              defaultValue={body}
-              onMount={handleEditorDidMount}
-              value={body}
-              onChange={(value) => {
-                setPrettifyError(null);
-                setBody(value ?? '');
-              }}
-              theme="dark-gray"
-            />
+            <div
+              className={`rounded overflow-hidden border ${prettifyError ? 'border-red-400' : 'border-gray-700'}`}
+            >
+              <Editor
+                height="300px"
+                defaultLanguage={bodyMode}
+                language={bodyMode}
+                defaultValue={body}
+                onMount={handleEditorDidMount}
+                value={body}
+                onChange={(value) => handleBodyChange(value)}
+                theme="dark-gray"
+              />
+            </div>
 
             {bodyMode === 'json' && (
               <div className="flex gap-2 items-center">
