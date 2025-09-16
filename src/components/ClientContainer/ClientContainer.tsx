@@ -149,7 +149,7 @@ export default function ClientContainer({
 
   const handleBodyChange = (value: string) => {
     setPrettifyError(null);
-    setBody(value ?? '');
+    setBody(value);
   };
 
   return (
@@ -245,7 +245,7 @@ export default function ClientContainer({
                 defaultValue={body}
                 onMount={handleEditorDidMount}
                 value={body}
-                onChange={(value) => handleBodyChange(value)}
+                onChange={(value) => handleBodyChange(value ?? '')}
                 theme="dark-gray"
               />
             </div>
