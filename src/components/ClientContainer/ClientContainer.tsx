@@ -24,7 +24,7 @@ function parseHeadersFromSearchParams(
   const paramsArray = searchParams.split('&');
   paramsArray.forEach((param) => {
     const [key, value] = param.split('=');
-    if (key && value) {
+    if (key.trim()) {
       headers.push({
         key: decodeURIComponent(key.replace(/\+/g, ' ')),
         value: decodeURIComponent(value.replace(/\+/g, ' ')),
@@ -61,6 +61,19 @@ export default function ClientContainer({
   const [body, setBody] = useState(fromBase64(decodeURIComponent(initialBody)));
   const [bodyMode, setBodyMode] = useState<'json' | 'text'>('json');
   const [prettifyError, setPrettifyError] = useState<string | null>(null);
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
+  const [selectedMethod, setSelectedMethod] = useState<Method>(initialMethod);
+  const [headers, setHeaders] = useState<{ key: string; value: string }[]>(
+    () => {
+      const parsedHeaders = parseHeadersFromSearchParams(
+        searchParams.toString()
+      );
+      if (parsedHeaders.length) return parsedHeaders;
+      return [{ key: '', value: '' }];
+    }
+  );
 
   const prettifyBody = () => {
     if (bodyMode === 'json') {
@@ -86,20 +99,14 @@ export default function ClientContainer({
     router.replace(`${newPath}${query}`);
   };
 
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const router = useRouter();
-  const [selectedMethod, setSelectedMethod] = useState<Method>(initialMethod);
-  const [headers, setHeaders] = useState<{ key: string; value: string }[]>(
-    parseHeadersFromSearchParams(searchParams.toString())
-  );
-
   const handleSend = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const params = new URLSearchParams();
     headers.forEach(({ key, value }) => {
-      params.set(key.trim(), value);
+      if (key.trim()) {
+        params.set(key.trim(), value);
+      }
     });
 
     const base64Url = toBase64(url);
@@ -113,7 +120,7 @@ export default function ClientContainer({
     router.replace(`${newPath}${query}`);
   };
 
-  const updateHeader = (idx: number, field: 'key' | 'value', value: string) => {
+  const updateHeader = (idx: number, field: string, value: string) => {
     setHeaders((headers) =>
       headers.map((h, i) => (i === idx ? { ...h, [field]: value } : h))
     );
