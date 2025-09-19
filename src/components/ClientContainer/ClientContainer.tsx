@@ -26,9 +26,10 @@ function parseHeadersFromSearchParams(
   const paramsArray = searchParams.split('&');
   paramsArray.forEach((param) => {
     const [key, value] = param.split('=');
-    const trimmedKey = key.trim();
-    const trimmedValue = value.trim();
-    if (trimmedKey && trimmedValue) {
+    if (key && value) {
+      const trimmedKey = key.trim();
+      const trimmedValue = value.trim();
+
       headers.push({
         key: decodeURIComponent(trimmedKey.replace(/\+/g, ' ')),
         value: decodeURIComponent(trimmedValue.replace(/\+/g, ' ')),
