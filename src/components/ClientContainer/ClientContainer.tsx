@@ -95,6 +95,11 @@ export default function ClientContainer({
   const handleSend = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    let correctedUrl = url;
+    if (!/^https?:\/\//i.test(url)) {
+      correctedUrl = `http://${url}`;
+    }
+
     const params = new URLSearchParams();
     headers.forEach(({ key, value }) => {
       const trimmedKey = key.trim();
@@ -104,7 +109,7 @@ export default function ClientContainer({
       }
     });
 
-    const base64Url = toBase64(url);
+    const base64Url = toBase64(correctedUrl);
     const base64Body = body ? toBase64(body) : undefined;
 
     let newPath = `/client/${selectedMethod.method}/${base64Url}`;
@@ -130,7 +135,7 @@ export default function ClientContainer({
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          url,
+          url: correctedUrl,
           method: selectedMethod.method,
           headers: requestHeaders,
           body,
