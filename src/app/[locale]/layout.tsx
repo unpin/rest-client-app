@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import './globals.css';
+import './../../globals.css';
 import AppProviders from '@/providers/AppProviders';
 import { PropsWithChildren } from 'react';
 import StickyHeader from '@/components/Header/StickyHeader';
