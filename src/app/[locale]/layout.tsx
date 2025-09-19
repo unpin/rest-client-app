@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
-import './globals.css';
+import './../../globals.css';
 import AppProviders from '@/providers/AppProviders';
 import { PropsWithChildren } from 'react';
+import StickyHeader from '@/components/Header/StickyHeader';
+import Footer from '@/components/Footer/Footer';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -12,7 +14,11 @@ export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="en">
       <body>
-        <AppProviders>{children}</AppProviders>
+        <AppProviders>
+          <StickyHeader />
+          {children}
+          <Footer />
+        </AppProviders>
       </body>
     </html>
   );
