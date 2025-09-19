@@ -26,10 +26,12 @@ function parseHeadersFromSearchParams(
   const paramsArray = searchParams.split('&');
   paramsArray.forEach((param) => {
     const [key, value] = param.split('=');
-    if (key.trim()) {
+    const trimmedKey = key.trim();
+    const trimmedValue = value.trim();
+    if (trimmedKey && trimmedValue) {
       headers.push({
-        key: decodeURIComponent(key.replace(/\+/g, ' ')),
-        value: decodeURIComponent(value.replace(/\+/g, ' ')),
+        key: decodeURIComponent(trimmedKey.replace(/\+/g, ' ')),
+        value: decodeURIComponent(trimmedValue.replace(/\+/g, ' ')),
       });
     }
   });
@@ -95,8 +97,10 @@ export default function ClientContainer({
 
     const params = new URLSearchParams();
     headers.forEach(({ key, value }) => {
-      if (key.trim()) {
-        params.set(key.trim(), value);
+      const trimmedKey = key.trim();
+      const trimmedValue = value.trim();
+      if (trimmedKey && trimmedValue) {
+        params.set(trimmedKey, trimmedValue);
       }
     });
 
