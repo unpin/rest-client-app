@@ -10,6 +10,8 @@ import { FormEvent, useRef, useState } from 'react';
 import { MagicWand, Trash } from '../Icon/Icon';
 import { Editor } from '@monaco-editor/react';
 import type * as monaco from 'monaco-editor';
+import { ProxyResponseData } from '@/app/api/proxy/route';
+import ProxyResponseView from '../ProxyResponseContainer/ProxyResponseContainer';
 
 type ClientContainerProps = {
   initialMethod: Method;
@@ -69,7 +71,7 @@ export default function ClientContainer({
   const [bodyMode, setBodyMode] = useState<BodyMode>('json');
   const [prettifyError, setPrettifyError] = useState<string | null>(null);
   const [selectedMethod, setSelectedMethod] = useState<Method>(initialMethod);
-  const [response, setResponse] = useState<Response | null>(null);
+  const [response, setResponse] = useState<ProxyResponseData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [headers, setHeaders] = useState<{ key: string; value: string }[]>(
     () => {
@@ -319,31 +321,7 @@ export default function ClientContainer({
         {isLoading ? (
           <div className="text-gray-400">Loading...</div>
         ) : response ? (
-          <div className="flex flex-col gap-4">
-            <div
-              className={`font-mono font-semibold text-sm px-2 py-1 self-start rounded ${
-                response.status >= 200 && response.status < 300
-                  ? 'bg-green-800 text-green-200'
-                  : 'bg-red-800 text-red-200'
-              }`}
-            >
-              {response.status} {response.statusText}
-            </div>
-            <div>
-              <h4 className="font-semibold text-gray-300">Headers</h4>
-              <pre className="text-sm bg-gray-800 p-2 rounded overflow-x-auto">
-                {JSON.stringify(response.headers, null, 2)}
-              </pre>
-            </div>
-            <div>
-              <h4 className="font-semibold text-gray-300">Body</h4>
-              <pre className="text-sm bg-gray-800 p-2 rounded overflow-x-auto">
-                {typeof response.body === 'object'
-                  ? JSON.stringify(response.body, null, 2)
-                  : response.body}
-              </pre>
-            </div>
-          </div>
+          <ProxyResponseView response={response} />
         ) : (
           <div className="border border-gray-800 rounded">
             <div className="text-gray-400 text-center p-8">
