@@ -1,13 +1,13 @@
 import { redirect } from 'next/navigation';
 
 type ClientPageProps = {
-  params: {
+  params: Promise<{
     locale: string;
-  };
+  }>;
 };
 
-export default function ClientPage({ params }: ClientPageProps) {
-  const { locale } = params;
+export default async function ClientPage({ params }: ClientPageProps) {
+  const { locale } = await params;
 
   redirect('/' + locale + '/client/GET');
 }
