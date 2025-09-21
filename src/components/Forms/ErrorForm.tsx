@@ -3,12 +3,11 @@ type FormErrorProps = {
 };
 
 export default function ErrorForm({ message }: FormErrorProps) {
-  if (!message) {
-    return <div className="min-h-[1.5rem]" />;
-  }
   return (
-    <div className="text-red-600 text-xs overflow-y-auto">
-      <p className="leading-snug max-w-xs break-words">{message}</p>
+
+    <div data-testid="error-form-container" className="min-h-[1.5rem]">
+      {message && <p className="text-red-500 text-sm">{message}</p>}
+
     </div>
   );
 }

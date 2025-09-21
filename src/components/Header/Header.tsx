@@ -9,12 +9,12 @@ type HeaderProps = {
 export default function Header({ scrolled }: HeaderProps) {
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-300
-        ${scrolled ? 'bg-white shadow-md h-14' : 'bg-gray-100 h-20'}
-        dark:bg-gray-900
+      className={`sticky top-0 z-50 transition-all duration-300 p-4
+        ${scrolled ? 'bg-gray-800 shadow-md' : 'bg-gray-900'}
+        bg-gray-900
       `}
     >
-      <div className="max-w-6xl mx-auto flex items-center justify-between gap-4 h-full">
+      <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
         <div
           className={`transition-transform duration-300 ${
             scrolled ? 'scale-90' : 'scale-100'

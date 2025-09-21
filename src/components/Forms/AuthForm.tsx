@@ -62,29 +62,30 @@ export default function AuthForm({ form }: AuthFormProps) {
     return <div>Loading...</div>;
   }
   return (
-    <form onSubmit={handleSubmit(submit)} noValidate className="form">
-      <h2 className="text-2xl font-semibold text-gray-800 text-center">
-        {form === 'signIn' ? t('login.subtitle') : t('register.subtitle')}
-      </h2>
+    <div className="">
+      <form onSubmit={handleSubmit(submit)} noValidate className="form">
+        <h2 className="text-2xl font-semibold text-gray-300 text-center">
+          {form === 'signIn' ? t('login.subtitle') : t('register.subtitle')}
+        </h2>
 
-      {error && (
-        <div className="error-auth">
-          {t('errors.authFailed')}: {error.message}
+        {error && (
+          <div className="error-auth">
+            {t('errors.authFailed')}: {error.message}
+          </div>
+        )}
+        {authErrors && (
+          <div className="error-auth">{t(`errors.${authErrors.slice(5)}`)}</div>
+        )}
+
+        <div className="w-full">
+          <InputField
+            label={t('login.emailLabel')}
+            id="email"
+            autoComplete="email"
+            register={register('email')}
+          />
+          <ErrorForm message={errors.email?.message} />
         </div>
-      )}
-      {authErrors && (
-        <div className="error-auth">{t(`errors.${authErrors.slice(5)}`)}</div>
-      )}
-
-      <div className="space-y-2">
-        <InputField
-          label={t('login.emailLabel')}
-          id="email"
-          autoComplete="email"
-          register={register('email')}
-        />
-        <ErrorForm message={errors.email?.message} />
-      </div>
 
       <div className="space-y-2">
         <InputField
@@ -97,30 +98,32 @@ export default function AuthForm({ form }: AuthFormProps) {
         <ErrorForm message={errors.password?.message} />
       </div>
 
-      <AuthButton form={form} />
-      <div className="text-center text-sm text-gray-600">
-        {form === 'signUp' ? (
-          <>
-            {t('register.hasAccount')}{' '}
-            <Link
-              href="/auth/signin"
-              className="text-blue-600 hover:underline font-medium"
-            >
-              {t('register.goToLogin')}
-            </Link>
-          </>
-        ) : (
-          <>
-            {t('login.noAccount')}{' '}
-            <Link
-              href="/auth/signup"
-              className="text-blue-600 hover:underline font-medium"
-            >
-              {t('login.goToRegister')}
-            </Link>
-          </>
-        )}
-      </div>
-    </form>
+
+        <AuthButton form={form} />
+        <div className="text-center text-sm text-gray-300">
+          {form === 'signUp' ? (
+            <>
+              {t('register.hasAccount')}{' '}
+              <Link
+                href="/auth/signin"
+                className="text-blue-600 hover:underline font-medium"
+              >
+                {t('register.goToLogin')}
+              </Link>
+            </>
+          ) : (
+            <>
+              {t('login.noAccount')}{' '}
+              <Link
+                href="/auth/signup"
+                className="text-blue-600 hover:underline font-medium"
+              >
+                {t('login.goToRegister')}
+              </Link>
+            </>
+          )}
+        </div>
+      </form>
+    </div>
   );
 }
