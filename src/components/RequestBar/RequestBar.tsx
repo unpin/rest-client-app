@@ -20,12 +20,12 @@ export default function RequestBar({
         type="text"
         value={url}
         onChange={(e) => onUrlChange(e.target.value)}
-        className={`px-4 grow focus:outline-none focus:ring-1 focus:ring-blue-500 rounded text-gray-200 ${urlError ? 'text-red-300' : ''}`}
+        className={`px-4 grow focus:outline-none focus:ring-1 focus:ring-blue-500 rounded-lg text-gray-200 ${urlError ? 'text-red-300' : ''}`}
         placeholder="Enter request URL..."
       />
       <button
         type="submit"
-        className="flex gap-2 items-center font-semibold rounded bg-blue-500 hover:bg-blue-400 px-4 cursor-pointer"
+        className="flex gap-2 items-center font-semibold rounded-lg bg-blue-500 hover:bg-blue-400 px-4 cursor-pointer"
       >
         Send
         <span className="fill-gray-200">

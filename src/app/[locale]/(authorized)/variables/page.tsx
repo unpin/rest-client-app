@@ -22,7 +22,7 @@ export default function VariablesPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto min-h-[300px] p-4 rounded bg-gray-900">
+    <div className="max-w-6xl mx-auto min-h-[300px] p-4 rounded-lg bg-gray-900">
       <h1 className="text-2xl font-bold mb-4">Variables</h1>
       <table className="table">
         <thead className="table-header">

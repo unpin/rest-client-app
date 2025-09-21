@@ -19,6 +19,7 @@ import { ProxyResponseData } from '@/app/api/proxy/route';
 import ProxyResponseView from '../ProxyResponseContainer/ProxyResponseContainer';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { useLocale } from 'next-intl';
+import { useRequestHistory } from '@/hooks/useRequestHistory';
 
 type ClientContainerProps = {
   initialMethod: string;
@@ -101,6 +102,7 @@ export default function ClientContainer({
     []
   );
   const [urlError, setUrlError] = useState<string | null>(null);
+  const { addItem } = useRequestHistory();
 
   const variableMap = useMemo(() => {
     return storedVariables.reduce(
@@ -175,9 +177,16 @@ export default function ClientContainer({
       {} as Record<string, string>
     );
 
+    const base64Url = toBase64(url);
+    const base64Body = body ? toBase64(body) : undefined;
+    let newPath = `/client/${selectedMethod}/${base64Url}`;
+    if (base64Body) newPath += `/${base64Body}`;
+    const query = params.toString() ? `?${params.toString()}` : '';
+    const fullPath = `/${locale}${newPath}${query}`;
+
     try {
       setIsLoading(true);
-      const res = await fetch('/api/proxy', {
+      const response = await fetch('/api/proxy', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -190,19 +199,26 @@ export default function ClientContainer({
         }),
       });
 
-      const data = await res.json();
+      const data = (await response.json()) as ProxyResponseData;
+      addItem({
+        endpointURL: `${newPath}${query}`,
+        requestBody: data.requestBody,
+        responseBody: data.responseBody,
+        requestHeaders: data.requestHeaders,
+        status: data.status,
+        statusText: data.statusText,
+        requestMethod: data.requestMethod,
+        requestSize: data.requestSize,
+        responseSize: data.responseSize,
+        responseHeaders: data.responseHeaders,
+        responseTime: data.responseTime,
+        timestamp: data.timestamp,
+      });
       setResponse(data);
     } catch (error) {
       console.log(error);
     } finally {
       setIsLoading(false);
-      const base64Url = toBase64(url);
-      const base64Body = body ? toBase64(body) : undefined;
-
-      let newPath = `/client/${selectedMethod}/${base64Url}`;
-      if (base64Body) newPath += `/${base64Body}`;
-      const query = params.toString() ? `?${params.toString()}` : '';
-      const fullPath = `/${locale}${newPath}${query}`;
 
       window.history.replaceState(null, '', fullPath);
     }
@@ -254,7 +270,6 @@ export default function ClientContainer({
   };
 
   const request = useMemo(() => {
-    console.log('memp', headers);
     const reg: RequestDefinition = {
       url: replaceWithVariables(url),
       method: 'POST',
@@ -275,8 +290,8 @@ export default function ClientContainer({
   }, [url, headers, body, bodyMode, variableMap]);
 
   return (
-    <div className="max-w-6xl mx-auto min-h-[300px] p-4 rounded bg-gray-900">
-      <div className="rounded border border-gray-800 ">
+    <div className="max-w-6xl mx-auto min-h-[300px] p-4 rounded-lg bg-gray-900">
+      <div className="rounded-lg border border-gray-800">
         <div className="flex p-1 gap-1 items-stretch">
           <MethodDropdown
             selected={selectedMethod}
@@ -296,7 +311,7 @@ export default function ClientContainer({
           <h3 className="font-semibold text-lg text-gray-200">Headers</h3>
           <button
             onClick={addHeader}
-            className="py-1 text-white self-start text-sm font-semibold rounded bg-blue-500 hover:bg-blue-400 px-6 cursor-pointer"
+            className="py-1 text-white self-start text-sm font-semibold rounded-lg bg-blue-500 hover:bg-blue-400 px-6 cursor-pointer"
           >
             Add header
           </button>
@@ -350,7 +365,7 @@ export default function ClientContainer({
         <div>
           {methodHasBody(selectedMethod) ? (
             <div className="flex flex-col gap-4">
-              <div className="flex gap-1 bg-gray-800 self-start p-1 rounded">
+              <div className="flex gap-1 bg-gray-800 self-start p-1 rounded-xl">
                 <button
                   type="button"
                   className={`button-body-mode ${bodyMode === 'json' ? 'bg-blue-500 hover:bg-blue-400' : 'hover:bg-gray-700'}`}
@@ -367,7 +382,7 @@ export default function ClientContainer({
                 </button>
               </div>
               <div
-                className={`rounded overflow-hidden border ${prettifyError ? 'border-red-400' : 'border-gray-700'}`}
+                className={`rounded-lg overflow-hidden border ${prettifyError ? 'border-red-400' : 'border-gray-700'}`}
               >
                 <Editor
                   height="300px"
@@ -384,7 +399,7 @@ export default function ClientContainer({
               {bodyMode === 'json' && (
                 <div className="flex gap-2 items-center">
                   <button
-                    className="flex items-center gap-2 text-gray-300 fill-gray-300 hover:text-gray-200 hover:fill-gray-200 px-4 py-1 border border-gray-800 hover:border-gray-600 rounded self-start cursor-pointer transition-all"
+                    className="flex items-center gap-2 text-gray-300 fill-gray-300 hover:text-gray-200 hover:fill-gray-200 px-4 py-1 border border-gray-800 hover:border-gray-600 rounded-lg self-start cursor-pointer transition-all"
                     onClick={prettifyBody}
                   >
                     <MagicWand />
@@ -397,18 +412,18 @@ export default function ClientContainer({
               )}
             </div>
           ) : (
-            <div className="border border-gray-800 rounded">
+            <div className="border border-gray-800 rounded-xl">
               <div className="text-gray-400 text-center p-8">
                 A request body is only used for{' '}
-                <span className="text-orange-300 text-sm font-medium bg-orange-100/20 px-2 rounded border border-orange-200">
+                <span className="text-orange-300 text-sm font-medium bg-orange-300/10 px-2 py-1 rounded-lg border border-orange-200">
                   POST
                 </span>
                 ,{' '}
-                <span className="text-purple-300 text-sm font-medium bg-orange-100/20 px-2 rounded border border-purple-200">
+                <span className="text-purple-300 text-sm font-medium bg-orange-300/10 px-2 py-1 rounded-lg border border-purple-200">
                   PUT
                 </span>
                 , and{' '}
-                <span className="text-blue-300 text-sm font-medium bg-orange-100/20 px-2 rounded border border-blue-300">
+                <span className="text-blue-300 text-sm font-medium bg-orange-300/10 px-2 py-1 rounded-lg border border-blue-300">
                   PATCH
                 </span>{' '}
                 methods
@@ -423,7 +438,7 @@ export default function ClientContainer({
         ) : response ? (
           <ProxyResponseView response={response} />
         ) : (
-          <div className="border border-gray-800 rounded">
+          <div className="border border-gray-800 rounded-xl">
             <div className="text-gray-400 text-center p-8">
               Enter the URL and click SEND to get a response
             </div>
