@@ -94,8 +94,8 @@ export default function CodegenSelector({ request }: CodegenSelectorProps) {
           </div>
 
           <textarea
-            className="flex-1 min-h-[200px] rounded-md border border-gray-300 text-sm text-gray-100 shadow-sm
-                       dark:bg-gray-800 dark:border-neutral-700 dark:text-gray-100 resize-none"
+            className="flex-1 min-h-[200px] rounded-md border border-gray-300 text-sm shadow-sm
+                       bg-gray-800 text-gray-100 resize-none"
             placeholder="Code Example"
             value={code}
             readOnly

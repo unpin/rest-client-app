@@ -34,14 +34,13 @@ body {
   @apply text-red-500 text-sm bg-gray-50 p-2 rounded-md border border-gray-200;
 }
 .form {
-  @apply w-[600px] bg-white shadow-2xl rounded-3xl p-12 space-y-10
-  border-2 border-gray-300 flex flex-col items-center;
+  @apply mx-auto max-w-[600px] rounded-xl p-12 space-y-10
+  border-1 border-gray-700 flex flex-col items-center bg-gray-900;
 }
 .input-field {
-  @apply w-[400px] rounded-2xl border-1 border-gray-300 bg-white
-  px-5 py-2 text-gray-600 placeholder-gray-300
+  @apply w-full rounded-2xl border-1 border-gray-300 px-5 py-2 text-gray-600 placeholder-gray-300
   focus:border-gray-300 focus:ring-1 focus:ring-gray-200
-  outline-none transition;
+  outline-none transition bg-gray-800;
 }
 
 .button-method {
@@ -127,7 +126,7 @@ body {
 }
 
 .form-input {
-  @apply w-full px-2 py-2 focus:bg-gray-800 text-gray-200 transition-all focus:outline-none focus:ring-1 focus:ring-blue-500 rounded;
+  @apply w-full px-2 py-2 focus:bg-gray-700 text-gray-200 transition-all focus:outline-none focus:ring-1 focus:ring-blue-500 rounded;
 }
 
 .button-body-mode {

@@ -30,9 +30,9 @@ export default function SelectField({
         id={id}
         name={name}
         defaultValue={defaultValue}
-        className="h-[25px] rounded-md border border-gray-300 bg-white px-3 text-sm shadow-sm
+        className="h-[25px] rounded-md border px-3 text-sm shadow-sm
              focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
-             dark:bg-gray-800 dark:border-neutral-700 dark:text-gray-100 "
+             bg-gray-800 border-neutral-700 text-gray-100 "
         {...register}
         onChange={onChange}
         value={value}
