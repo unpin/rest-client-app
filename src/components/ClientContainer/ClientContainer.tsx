@@ -4,9 +4,8 @@ import MethodDropdown, {
   type Method,
 } from '@/components/MethodDropdown/MethodDropdown';
 import RequestBar from '@/components/RequestBar/RequestBar';
-import { useRouter } from '@/i18n/navigation';
 import { useSearchParams } from 'next/navigation';
-import { FormEvent, useMemo, useRef, useState } from 'react';
+import { FormEvent, useRef, useState, useMemo } from 'react';
 import { MagicWand, Trash } from '../Icon/Icon';
 import { Editor } from '@monaco-editor/react';
 import type * as monaco from 'monaco-editor';
@@ -18,7 +17,8 @@ import {
 
 import { ProxyResponseData } from '@/app/api/proxy/route';
 import ProxyResponseView from '../ProxyResponseContainer/ProxyResponseContainer';
-
+import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { useLocale } from 'next-intl';
 
 type ClientContainerProps = {
   initialMethod: string;
@@ -76,7 +76,7 @@ export default function ClientContainer({
   initialBody,
 }: ClientContainerProps) {
   const searchParams = useSearchParams();
-  const router = useRouter();
+  const locale = useLocale();
   const [url, setUrl] = useState(fromBase64(decodeURIComponent(initialUrl)));
   const [body, setBody] = useState(fromBase64(decodeURIComponent(initialBody)));
   const [bodyMode, setBodyMode] = useState<BodyMode>('json');
@@ -96,6 +96,30 @@ export default function ClientContainer({
     }
   );
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
+  const [storedVariables] = useLocalStorage<{ key: string; value: string }[]>(
+    'variables',
+    []
+  );
+  const [urlError, setUrlError] = useState<string | null>(null);
+
+  const variableMap = useMemo(() => {
+    return storedVariables.reduce(
+      (acc, { key, value }) => {
+        if (key) {
+          acc[key] = value;
+        }
+        return acc;
+      },
+      {} as Record<string, string>
+    );
+  }, [storedVariables]);
+
+  const replaceWithVariables = (input: string) => {
+    if (!input) return '';
+    return input.replace(/{{\s*(\w+)\s*}}/g, (match, key) => {
+      return variableMap[key] || match;
+    });
+  };
 
   const prettifyBody = () => {
     if (bodyMode === 'json') {
@@ -108,12 +132,30 @@ export default function ClientContainer({
     }
   };
 
+  const onURLChange = (url: string) => {
+    setUrlError(null);
+    setUrl(() => url);
+  };
+
+  const isURLCorrect = (url: string) => {
+    try {
+      new URL(replaceWithVariables(url));
+    } catch {
+      return false;
+    }
+    return true;
+  };
+
   const handleSend = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!url.trim()) return;
 
-    let correctedUrl = url;
-    if (!/^https?:\/\//i.test(url)) {
-      correctedUrl = `http://${url}`;
+    setUrlError(null);
+    setResponse(null);
+
+    if (!isURLCorrect(url)) {
+      setUrlError('Invalid URL format.');
+      return;
     }
 
     const params = new URLSearchParams();
@@ -125,36 +167,26 @@ export default function ClientContainer({
       }
     });
 
-    const base64Url = toBase64(correctedUrl);
-    const base64Body = body ? toBase64(body) : undefined;
-
-    let newPath = `/client/${selectedMethod}/${base64Url}`;
-    if (base64Body) newPath += `/${base64Body}`;
-    const query = params.toString() ? `?${params.toString()}` : '';
-    router.replace(`${newPath}${query}`);
-
-    setIsLoading(true);
-    setResponse(null);
-
     const requestHeaders = headers.reduce(
       (acc, { key, value }) => {
-        if (key) acc[key] = value;
+        if (key) acc[key] = replaceWithVariables(value);
         return acc;
       },
       {} as Record<string, string>
     );
 
     try {
+      setIsLoading(true);
       const res = await fetch('/api/proxy', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          url: correctedUrl,
+          url: replaceWithVariables(url),
           method: selectedMethod,
           headers: requestHeaders,
-          body,
+          body: replaceWithVariables(body),
         }),
       });
 
@@ -164,6 +196,15 @@ export default function ClientContainer({
       console.log(error);
     } finally {
       setIsLoading(false);
+      const base64Url = toBase64(url);
+      const base64Body = body ? toBase64(body) : undefined;
+
+      let newPath = `/client/${selectedMethod}/${base64Url}`;
+      if (base64Body) newPath += `/${base64Body}`;
+      const query = params.toString() ? `?${params.toString()}` : '';
+      const fullPath = `/${locale}${newPath}${query}`;
+
+      window.history.replaceState(null, '', fullPath);
     }
   };
 
@@ -236,7 +277,12 @@ export default function ClientContainer({
             setSelected={handleMethodChange}
           />
           <div className="shrink-0 w-[1px] min-h-full bg-gray-800"></div>
-          <RequestBar onSend={handleSend} url={url} onUrlChange={setUrl} />
+          <RequestBar
+            onSend={handleSend}
+            url={url}
+            onUrlChange={onURLChange}
+            urlError={urlError}
+          />
         </div>
       </div>
       <div className="flex flex-col mt-4 gap-4">
