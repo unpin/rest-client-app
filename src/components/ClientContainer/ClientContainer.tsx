@@ -16,6 +16,10 @@ import {
   RequestDefinition,
 } from 'postman-collection';
 
+import { ProxyResponseData } from '@/app/api/proxy/route';
+import ProxyResponseView from '../ProxyResponseContainer/ProxyResponseContainer';
+
+
 type ClientContainerProps = {
   initialMethod: Method;
   initialUrl: string;
@@ -31,10 +35,13 @@ function parseHeadersFromSearchParams(
   const paramsArray = searchParams.split('&');
   paramsArray.forEach((param) => {
     const [key, value] = param.split('=');
-    if (key.trim()) {
+    if (key && value) {
+      const trimmedKey = key.trim();
+      const trimmedValue = value.trim();
+
       headers.push({
-        key: decodeURIComponent(key.replace(/\+/g, ' ')),
-        value: decodeURIComponent(value.replace(/\+/g, ' ')),
+        key: decodeURIComponent(trimmedKey.replace(/\+/g, ' ')),
+        value: decodeURIComponent(trimmedValue.replace(/\+/g, ' ')),
       });
     }
   });
@@ -71,7 +78,7 @@ export default function ClientContainer({
   const [bodyMode, setBodyMode] = useState<BodyMode>('json');
   const [prettifyError, setPrettifyError] = useState<string | null>(null);
   const [selectedMethod, setSelectedMethod] = useState<Method>(initialMethod);
-  const [response, setResponse] = useState<Response | null>(null);
+  const [response, setResponse] = useState<ProxyResponseData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [headers, setHeaders] = useState<{ key: string; value: string }[]>(
     () => {
@@ -98,14 +105,21 @@ export default function ClientContainer({
   const handleSend = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    let correctedUrl = url;
+    if (!/^https?:\/\//i.test(url)) {
+      correctedUrl = `http://${url}`;
+    }
+
     const params = new URLSearchParams();
     headers.forEach(({ key, value }) => {
-      if (key.trim()) {
-        params.set(key.trim(), value);
+      const trimmedKey = key.trim();
+      const trimmedValue = value.trim();
+      if (trimmedKey && trimmedValue) {
+        params.set(trimmedKey, trimmedValue);
       }
     });
 
-    const base64Url = toBase64(url);
+    const base64Url = toBase64(correctedUrl);
     const base64Body = body ? toBase64(body) : undefined;
 
     let newPath = `/client/${selectedMethod.method}/${base64Url}`;
@@ -131,7 +145,7 @@ export default function ClientContainer({
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          url,
+          url: correctedUrl,
           method: selectedMethod.method,
           headers: requestHeaders,
           body,
@@ -329,31 +343,7 @@ export default function ClientContainer({
         {isLoading ? (
           <div className="text-gray-400">Loading...</div>
         ) : response ? (
-          <div className="flex flex-col gap-4">
-            <div
-              className={`font-mono font-semibold text-sm px-2 py-1 self-start rounded ${
-                response.status >= 200 && response.status < 300
-                  ? 'bg-green-800 text-green-200'
-                  : 'bg-red-800 text-red-200'
-              }`}
-            >
-              {response.status} {response.statusText}
-            </div>
-            <div>
-              <h4 className="font-semibold text-gray-300">Headers</h4>
-              <pre className="text-sm bg-gray-800 p-2 rounded overflow-x-auto">
-                {JSON.stringify(response.headers, null, 2)}
-              </pre>
-            </div>
-            <div>
-              <h4 className="font-semibold text-gray-300">Body</h4>
-              <pre className="text-sm bg-gray-800 p-2 rounded overflow-x-auto">
-                {typeof response.body === 'object'
-                  ? JSON.stringify(response.body, null, 2)
-                  : response.body}
-              </pre>
-            </div>
-          </div>
+          <ProxyResponseView response={response} />
         ) : (
           <div className="border border-gray-800 rounded">
             <div className="text-gray-400 text-center p-8">
