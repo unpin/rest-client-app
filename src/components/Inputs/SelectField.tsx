@@ -23,11 +23,14 @@ export default function SelectField({
 }: SelectFieldProps) {
   return (
     <div className="flex flex-col space-y-2 w-48">
-      <label htmlFor={id} className="font-semibold text-sm text-gray-100">
+      <label
+        htmlFor={id || name || label}
+        className="font-semibold text-sm text-gray-100"
+      >
         {label}
       </label>
       <select
-        id={id}
+        id={id || name || label}
         name={name}
         defaultValue={defaultValue}
         className="h-[25px] rounded-md border px-3 text-sm shadow-sm

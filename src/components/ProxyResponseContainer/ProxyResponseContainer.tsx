@@ -56,9 +56,17 @@ export default function ProxyResponseView({
         </div>
         {view === 'body' ? (
           <pre className="text-sm bg-gray-800 p-2 rounded-lg overflow-auto max-h-128 whitespace-pre-wrap break-all">
-            {typeof response.responseBody === 'object'
-              ? JSON.stringify(response.responseBody, null, 2)
-              : response.responseBody}
+            {(() => {
+              try {
+                return JSON.stringify(
+                  JSON.parse(response.responseBody),
+                  null,
+                  2
+                );
+              } catch {
+                return response.responseBody;
+              }
+            })()}
           </pre>
         ) : (
           <pre className="text-sm bg-gray-800 p-2 rounded-lg overflow-auto max-h-128 whitespace-pre-wrap break-all">
