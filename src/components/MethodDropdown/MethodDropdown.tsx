@@ -1,16 +1,23 @@
 import { CaretDown } from '@/components/Icon/Icon';
 import { useEffect, useRef, useState } from 'react';
 
-export type Method = { method: string };
+export type Method =
+  | 'GET'
+  | 'POST'
+  | 'PUT'
+  | 'PATCH'
+  | 'DELETE'
+  | 'HEAD'
+  | 'OPTIONS';
 
 const methods: Method[] = [
-  { method: 'GET' },
-  { method: 'POST' },
-  { method: 'PUT' },
-  { method: 'PATCH' },
-  { method: 'DELETE' },
-  { method: 'HEAD' },
-  { method: 'OPTIONS' },
+  'GET',
+  'POST',
+  'PUT',
+  'PATCH',
+  'DELETE',
+  'HEAD',
+  'OPTIONS',
 ];
 
 type MethodDropdownProps = {
@@ -47,25 +54,23 @@ export default function MethodDropdown({
   return (
     <div className="relative" ref={dropdownRef}>
       <button
-        className="button-method flex items-center gap-2 rounded hover:bg-gray-800 py-2 px-4 font-bold"
+        className="button-method flex items-center gap-2 rounded-lg hover:bg-gray-800 py-2 px-4 font-bold"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <span className={`text-sm ${selected.method.toLowerCase()}`}>
-          {selected.method}
-        </span>
+        <span className={`text-sm ${selected.toLowerCase()}`}>{selected}</span>
         <span className="fill-gray-200">
           <CaretDown />
         </span>
       </button>
       {isOpen && (
-        <ul className="absolute z-10 mt-2 bg-gray-900 rounded methods-list">
+        <ul className="absolute z-10 mt-2 bg-gray-900 rounded-lg methods-list">
           {methods.map((method) => (
             <li
-              key={method.method}
-              className={`methods-list-item text-sm ${selected.method === method.method ? 'selected' : ''} ${method.method.toLocaleLowerCase()}`}
+              key={method}
+              className={`methods-list-item text-sm ${selected === method ? 'selected' : ''} ${method.toLocaleLowerCase()}`}
               onClick={() => handleMethodSelection(method)}
             >
-              {method.method}
+              {method}
             </li>
           ))}
         </ul>

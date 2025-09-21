@@ -1,4 +1,6 @@
+import AuthGuard from '@/components/AuthGuard/AuthGuard';
 import type { Metadata } from 'next';
+
 import { PropsWithChildren } from 'react';
 
 export const metadata: Metadata = {
@@ -7,5 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function AuthorizedLayout({ children }: PropsWithChildren) {
-  return <section>{children}</section>;
+  return <AuthGuard>{children}</AuthGuard>;
 }
