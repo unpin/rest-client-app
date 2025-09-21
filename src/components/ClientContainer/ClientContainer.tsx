@@ -4,9 +4,8 @@ import MethodDropdown, {
   type Method,
 } from '@/components/MethodDropdown/MethodDropdown';
 import RequestBar from '@/components/RequestBar/RequestBar';
-import { useRouter } from '@/i18n/navigation';
 import { useSearchParams } from 'next/navigation';
-import { FormEvent, useMemo, useRef, useState } from 'react';
+import { FormEvent, useRef, useState, useMemo } from 'react';
 import { MagicWand, Trash } from '../Icon/Icon';
 import { Editor } from '@monaco-editor/react';
 import type * as monaco from 'monaco-editor';
@@ -18,10 +17,11 @@ import {
 
 import { ProxyResponseData } from '@/app/api/proxy/route';
 import ProxyResponseView from '../ProxyResponseContainer/ProxyResponseContainer';
-
+import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { useLocale } from 'next-intl';
 
 type ClientContainerProps = {
-  initialMethod: Method;
+  initialMethod: string;
   initialUrl: string;
   initialBody: string;
 };
@@ -66,18 +66,24 @@ function toBase64(string: string) {
   );
 }
 
+function methodHasBody(method: Method) {
+  return method === 'POST' || method === 'PUT' || method === 'PATCH';
+}
+
 export default function ClientContainer({
   initialMethod,
   initialUrl,
   initialBody,
 }: ClientContainerProps) {
   const searchParams = useSearchParams();
-  const router = useRouter();
+  const locale = useLocale();
   const [url, setUrl] = useState(fromBase64(decodeURIComponent(initialUrl)));
   const [body, setBody] = useState(fromBase64(decodeURIComponent(initialBody)));
   const [bodyMode, setBodyMode] = useState<BodyMode>('json');
   const [prettifyError, setPrettifyError] = useState<string | null>(null);
-  const [selectedMethod, setSelectedMethod] = useState<Method>(initialMethod);
+  const [selectedMethod, setSelectedMethod] = useState<Method>(
+    initialMethod as Method
+  );
   const [response, setResponse] = useState<ProxyResponseData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [headers, setHeaders] = useState<{ key: string; value: string }[]>(
@@ -90,6 +96,30 @@ export default function ClientContainer({
     }
   );
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
+  const [storedVariables] = useLocalStorage<{ key: string; value: string }[]>(
+    'variables',
+    []
+  );
+  const [urlError, setUrlError] = useState<string | null>(null);
+
+  const variableMap = useMemo(() => {
+    return storedVariables.reduce(
+      (acc, { key, value }) => {
+        if (key) {
+          acc[key] = value;
+        }
+        return acc;
+      },
+      {} as Record<string, string>
+    );
+  }, [storedVariables]);
+
+  const replaceWithVariables = (input: string) => {
+    if (!input) return '';
+    return input.replace(/{{\s*(\w+)\s*}}/g, (match, key) => {
+      return variableMap[key] || match;
+    });
+  };
 
   const prettifyBody = () => {
     if (bodyMode === 'json') {
@@ -102,12 +132,30 @@ export default function ClientContainer({
     }
   };
 
+  const onURLChange = (url: string) => {
+    setUrlError(null);
+    setUrl(() => url);
+  };
+
+  const isURLCorrect = (url: string) => {
+    try {
+      new URL(replaceWithVariables(url));
+    } catch {
+      return false;
+    }
+    return true;
+  };
+
   const handleSend = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!url.trim()) return;
 
-    let correctedUrl = url;
-    if (!/^https?:\/\//i.test(url)) {
-      correctedUrl = `http://${url}`;
+    setUrlError(null);
+    setResponse(null);
+
+    if (!isURLCorrect(url)) {
+      setUrlError('Invalid URL format.');
+      return;
     }
 
     const params = new URLSearchParams();
@@ -119,36 +167,26 @@ export default function ClientContainer({
       }
     });
 
-    const base64Url = toBase64(correctedUrl);
-    const base64Body = body ? toBase64(body) : undefined;
-
-    let newPath = `/client/${selectedMethod.method}/${base64Url}`;
-    if (base64Body) newPath += `/${base64Body}`;
-    const query = params.toString() ? `?${params.toString()}` : '';
-    router.replace(`${newPath}${query}`);
-
-    setIsLoading(true);
-    setResponse(null);
-
     const requestHeaders = headers.reduce(
       (acc, { key, value }) => {
-        if (key) acc[key] = value;
+        if (key) acc[key] = replaceWithVariables(value);
         return acc;
       },
       {} as Record<string, string>
     );
 
     try {
+      setIsLoading(true);
       const res = await fetch('/api/proxy', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          url: correctedUrl,
-          method: selectedMethod.method,
+          url: replaceWithVariables(url),
+          method: selectedMethod,
           headers: requestHeaders,
-          body,
+          body: replaceWithVariables(body),
         }),
       });
 
@@ -158,6 +196,15 @@ export default function ClientContainer({
       console.log(error);
     } finally {
       setIsLoading(false);
+      const base64Url = toBase64(url);
+      const base64Body = body ? toBase64(body) : undefined;
+
+      let newPath = `/client/${selectedMethod}/${base64Url}`;
+      if (base64Body) newPath += `/${base64Body}`;
+      const query = params.toString() ? `?${params.toString()}` : '';
+      const fullPath = `/${locale}${newPath}${query}`;
+
+      window.history.replaceState(null, '', fullPath);
     }
   };
 
@@ -207,19 +254,25 @@ export default function ClientContainer({
   };
 
   const request = useMemo(() => {
+    console.log('memp', headers);
     const reg: RequestDefinition = {
-      url,
+      url: replaceWithVariables(url),
       method: 'POST',
-      header: headers,
+      header: headers.map((header) => {
+        return {
+          key: header.key,
+          value: replaceWithVariables(header.value),
+        };
+      }),
       body: body
         ? {
             mode: 'raw',
-            raw: body,
+            raw: replaceWithVariables(body),
           }
         : undefined,
     };
     return new PostmanRequest(reg);
-  }, [url, headers, body, bodyMode]);
+  }, [url, headers, body, bodyMode, variableMap]);
 
   return (
     <div className="max-w-6xl mx-auto min-h-[300px] p-4 rounded bg-gray-900">
@@ -230,7 +283,12 @@ export default function ClientContainer({
             setSelected={handleMethodChange}
           />
           <div className="shrink-0 w-[1px] min-h-full bg-gray-800"></div>
-          <RequestBar onSend={handleSend} url={url} onUrlChange={setUrl} />
+          <RequestBar
+            onSend={handleSend}
+            url={url}
+            onUrlChange={onURLChange}
+            urlError={urlError}
+          />
         </div>
       </div>
       <div className="flex flex-col mt-4 gap-4">
@@ -290,53 +348,73 @@ export default function ClientContainer({
         <CodegenSelector request={request as PostmanRequest} />
         <h3 className="font-semibold text-lg text-gray-200">Body</h3>
         <div>
-          <div className="flex flex-col gap-4">
-            <div className="flex gap-1 bg-gray-800 self-start p-1 rounded">
-              <button
-                type="button"
-                className={`button-body-mode ${bodyMode === 'json' ? 'bg-blue-500 hover:bg-blue-400' : 'hover:bg-gray-700'}`}
-                onClick={() => handleBodyModeChange('json')}
-              >
-                JSON
-              </button>
-              <button
-                type="button"
-                className={`button-body-mode ${bodyMode === 'text' ? 'bg-blue-500 hover:bg-blue-400' : 'hover:bg-gray-700'}`}
-                onClick={() => handleBodyModeChange('text')}
-              >
-                Text
-              </button>
-            </div>
-            <div
-              className={`rounded overflow-hidden border ${prettifyError ? 'border-red-400' : 'border-gray-700'}`}
-            >
-              <Editor
-                height="300px"
-                defaultLanguage={bodyMode}
-                language={bodyMode}
-                defaultValue={body}
-                onMount={handleEditorDidMount}
-                value={body}
-                onChange={(value) => handleBodyChange(value ?? '')}
-                theme="dark-gray"
-              />
-            </div>
-
-            {bodyMode === 'json' && (
-              <div className="flex gap-2 items-center">
+          {methodHasBody(selectedMethod) ? (
+            <div className="flex flex-col gap-4">
+              <div className="flex gap-1 bg-gray-800 self-start p-1 rounded">
                 <button
-                  className="flex items-center gap-2 text-gray-300 fill-gray-300 hover:text-gray-200 hover:fill-gray-200 px-4 py-1 border border-gray-800 hover:border-gray-600 rounded self-start cursor-pointer transition-all"
-                  onClick={prettifyBody}
+                  type="button"
+                  className={`button-body-mode ${bodyMode === 'json' ? 'bg-blue-500 hover:bg-blue-400' : 'hover:bg-gray-700'}`}
+                  onClick={() => handleBodyModeChange('json')}
                 >
-                  <MagicWand />
-                  Prettify
+                  JSON
                 </button>
-                <p className="text-red-400 text-sm">
-                  {prettifyError && prettifyError}
-                </p>
+                <button
+                  type="button"
+                  className={`button-body-mode ${bodyMode === 'text' ? 'bg-blue-500 hover:bg-blue-400' : 'hover:bg-gray-700'}`}
+                  onClick={() => handleBodyModeChange('text')}
+                >
+                  Text
+                </button>
               </div>
-            )}
-          </div>
+              <div
+                className={`rounded overflow-hidden border ${prettifyError ? 'border-red-400' : 'border-gray-700'}`}
+              >
+                <Editor
+                  height="300px"
+                  defaultLanguage={bodyMode}
+                  language={bodyMode}
+                  defaultValue={body}
+                  onMount={handleEditorDidMount}
+                  value={body}
+                  onChange={(value) => handleBodyChange(value ?? '')}
+                  theme="dark-gray"
+                />
+              </div>
+
+              {bodyMode === 'json' && (
+                <div className="flex gap-2 items-center">
+                  <button
+                    className="flex items-center gap-2 text-gray-300 fill-gray-300 hover:text-gray-200 hover:fill-gray-200 px-4 py-1 border border-gray-800 hover:border-gray-600 rounded self-start cursor-pointer transition-all"
+                    onClick={prettifyBody}
+                  >
+                    <MagicWand />
+                    Prettify
+                  </button>
+                  <p className="text-red-400 text-sm">
+                    {prettifyError && prettifyError}
+                  </p>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="border border-gray-800 rounded">
+              <div className="text-gray-400 text-center p-8">
+                A request body is only used for{' '}
+                <span className="text-orange-300 text-sm font-medium bg-orange-100/20 px-2 rounded border border-orange-200">
+                  POST
+                </span>
+                ,{' '}
+                <span className="text-purple-300 text-sm font-medium bg-orange-100/20 px-2 rounded border border-purple-200">
+                  PUT
+                </span>
+                , and{' '}
+                <span className="text-blue-300 text-sm font-medium bg-orange-100/20 px-2 rounded border border-blue-300">
+                  PATCH
+                </span>{' '}
+                methods
+              </div>
+            </div>
+          )}
         </div>
 
         <h4 className="font-semibold text-lg text-gray-200">Response</h4>

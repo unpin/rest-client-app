@@ -5,12 +5,14 @@ type RequestBarProps = {
   url: string;
   onUrlChange: (url: string) => void;
   onSend: FormEventHandler<HTMLFormElement>;
+  urlError: string | null;
 };
 
 export default function RequestBar({
   url,
   onUrlChange,
   onSend,
+  urlError,
 }: RequestBarProps) {
   return (
     <form onSubmit={onSend} className="flex grow gap-1">
@@ -18,7 +20,7 @@ export default function RequestBar({
         type="text"
         value={url}
         onChange={(e) => onUrlChange(e.target.value)}
-        className="px-4 grow focus:outline-none focus:ring-1 focus:ring-blue-500 rounded text-gray-200"
+        className={`px-4 grow focus:outline-none focus:ring-1 focus:ring-blue-500 rounded text-gray-200 ${urlError ? 'text-red-300' : ''}`}
         placeholder="Enter request URL..."
       />
       <button
