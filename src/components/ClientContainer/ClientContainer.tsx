@@ -254,19 +254,25 @@ export default function ClientContainer({
   };
 
   const request = useMemo(() => {
+    console.log('memp', headers);
     const reg: RequestDefinition = {
-      url,
+      url: replaceWithVariables(url),
       method: 'POST',
-      header: headers,
+      header: headers.map((header) => {
+        return {
+          key: header.key,
+          value: replaceWithVariables(header.value),
+        };
+      }),
       body: body
         ? {
             mode: 'raw',
-            raw: body,
+            raw: replaceWithVariables(body),
           }
         : undefined,
     };
     return new PostmanRequest(reg);
-  }, [url, headers, body, bodyMode]);
+  }, [url, headers, body, bodyMode, variableMap]);
 
   return (
     <div className="max-w-6xl mx-auto min-h-[300px] p-4 rounded bg-gray-900">
