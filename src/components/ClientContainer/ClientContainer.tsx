@@ -270,11 +270,13 @@ export default function ClientContainer({
             ))}
           </tbody>
         </table>
-
+        <h3 className="font-semibold text-lg text-gray-200 my-2">
+          Code generation
+        </h3>
+        <CodegenSelector request={request as PostmanRequest} />
         <h3 className="font-semibold text-lg text-gray-200">Body</h3>
         <div>
           <div className="flex flex-col gap-4">
-            <CodegenSelector request={request as PostmanRequest} />
             <div className="flex gap-1 bg-gray-800 self-start p-1 rounded">
               <button
                 type="button"

@@ -79,9 +79,9 @@ export default function CodegenSelector({ request }: CodegenSelectorProps) {
 
         <div className="flex-1 flex flex-col">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="font-semibold text-sm text-gray-200">
+            <h4 className="font-semibold text-sm text-gray-200">
               Code examples
-            </h3>
+            </h4>
             <button
               onClick={copyCode}
               disabled={!code}
