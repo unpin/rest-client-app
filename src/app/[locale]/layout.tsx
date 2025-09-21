@@ -9,6 +9,9 @@ export const metadata: Metadata = {
   title: 'Rest Client',
   description:
     'A powerful and intuitive web-based REST client for making HTTP requests.',
+  icons: {
+    icon: '/logo.png',
+  },
 };
 
 type RootLayoutProps = {
