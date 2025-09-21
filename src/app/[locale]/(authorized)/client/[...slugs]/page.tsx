@@ -14,7 +14,7 @@ export default async function ClientPage({ params }: ClientPageProps) {
 
   return (
     <ClientContainer
-      initialMethod={{ method }}
+      initialMethod={method}
       initialUrl={base64Url}
       initialBody={base64Body}
     />

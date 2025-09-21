@@ -21,7 +21,7 @@ import ProxyResponseView from '../ProxyResponseContainer/ProxyResponseContainer'
 
 
 type ClientContainerProps = {
-  initialMethod: Method;
+  initialMethod: string;
   initialUrl: string;
   initialBody: string;
 };
@@ -66,6 +66,10 @@ function toBase64(string: string) {
   );
 }
 
+function methodHasBody(method: Method) {
+  return method === 'POST' || method === 'PUT' || method === 'PATCH';
+}
+
 export default function ClientContainer({
   initialMethod,
   initialUrl,
@@ -77,7 +81,9 @@ export default function ClientContainer({
   const [body, setBody] = useState(fromBase64(decodeURIComponent(initialBody)));
   const [bodyMode, setBodyMode] = useState<BodyMode>('json');
   const [prettifyError, setPrettifyError] = useState<string | null>(null);
-  const [selectedMethod, setSelectedMethod] = useState<Method>(initialMethod);
+  const [selectedMethod, setSelectedMethod] = useState<Method>(
+    initialMethod as Method
+  );
   const [response, setResponse] = useState<ProxyResponseData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [headers, setHeaders] = useState<{ key: string; value: string }[]>(
@@ -122,7 +128,7 @@ export default function ClientContainer({
     const base64Url = toBase64(correctedUrl);
     const base64Body = body ? toBase64(body) : undefined;
 
-    let newPath = `/client/${selectedMethod.method}/${base64Url}`;
+    let newPath = `/client/${selectedMethod}/${base64Url}`;
     if (base64Body) newPath += `/${base64Body}`;
     const query = params.toString() ? `?${params.toString()}` : '';
     router.replace(`${newPath}${query}`);
@@ -146,7 +152,7 @@ export default function ClientContainer({
         },
         body: JSON.stringify({
           url: correctedUrl,
-          method: selectedMethod.method,
+          method: selectedMethod,
           headers: requestHeaders,
           body,
         }),
@@ -290,53 +296,73 @@ export default function ClientContainer({
         <CodegenSelector request={request as PostmanRequest} />
         <h3 className="font-semibold text-lg text-gray-200">Body</h3>
         <div>
-          <div className="flex flex-col gap-4">
-            <div className="flex gap-1 bg-gray-800 self-start p-1 rounded">
-              <button
-                type="button"
-                className={`button-body-mode ${bodyMode === 'json' ? 'bg-blue-500 hover:bg-blue-400' : 'hover:bg-gray-700'}`}
-                onClick={() => handleBodyModeChange('json')}
-              >
-                JSON
-              </button>
-              <button
-                type="button"
-                className={`button-body-mode ${bodyMode === 'text' ? 'bg-blue-500 hover:bg-blue-400' : 'hover:bg-gray-700'}`}
-                onClick={() => handleBodyModeChange('text')}
-              >
-                Text
-              </button>
-            </div>
-            <div
-              className={`rounded overflow-hidden border ${prettifyError ? 'border-red-400' : 'border-gray-700'}`}
-            >
-              <Editor
-                height="300px"
-                defaultLanguage={bodyMode}
-                language={bodyMode}
-                defaultValue={body}
-                onMount={handleEditorDidMount}
-                value={body}
-                onChange={(value) => handleBodyChange(value ?? '')}
-                theme="dark-gray"
-              />
-            </div>
-
-            {bodyMode === 'json' && (
-              <div className="flex gap-2 items-center">
+          {methodHasBody(selectedMethod) ? (
+            <div className="flex flex-col gap-4">
+              <div className="flex gap-1 bg-gray-800 self-start p-1 rounded">
                 <button
-                  className="flex items-center gap-2 text-gray-300 fill-gray-300 hover:text-gray-200 hover:fill-gray-200 px-4 py-1 border border-gray-800 hover:border-gray-600 rounded self-start cursor-pointer transition-all"
-                  onClick={prettifyBody}
+                  type="button"
+                  className={`button-body-mode ${bodyMode === 'json' ? 'bg-blue-500 hover:bg-blue-400' : 'hover:bg-gray-700'}`}
+                  onClick={() => handleBodyModeChange('json')}
                 >
-                  <MagicWand />
-                  Prettify
+                  JSON
                 </button>
-                <p className="text-red-400 text-sm">
-                  {prettifyError && prettifyError}
-                </p>
+                <button
+                  type="button"
+                  className={`button-body-mode ${bodyMode === 'text' ? 'bg-blue-500 hover:bg-blue-400' : 'hover:bg-gray-700'}`}
+                  onClick={() => handleBodyModeChange('text')}
+                >
+                  Text
+                </button>
               </div>
-            )}
-          </div>
+              <div
+                className={`rounded overflow-hidden border ${prettifyError ? 'border-red-400' : 'border-gray-700'}`}
+              >
+                <Editor
+                  height="300px"
+                  defaultLanguage={bodyMode}
+                  language={bodyMode}
+                  defaultValue={body}
+                  onMount={handleEditorDidMount}
+                  value={body}
+                  onChange={(value) => handleBodyChange(value ?? '')}
+                  theme="dark-gray"
+                />
+              </div>
+
+              {bodyMode === 'json' && (
+                <div className="flex gap-2 items-center">
+                  <button
+                    className="flex items-center gap-2 text-gray-300 fill-gray-300 hover:text-gray-200 hover:fill-gray-200 px-4 py-1 border border-gray-800 hover:border-gray-600 rounded self-start cursor-pointer transition-all"
+                    onClick={prettifyBody}
+                  >
+                    <MagicWand />
+                    Prettify
+                  </button>
+                  <p className="text-red-400 text-sm">
+                    {prettifyError && prettifyError}
+                  </p>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="border border-gray-800 rounded">
+              <div className="text-gray-400 text-center p-8">
+                A request body is only used for{' '}
+                <span className="text-orange-300 text-sm font-medium bg-orange-100/20 px-2 rounded border border-orange-200">
+                  POST
+                </span>
+                ,{' '}
+                <span className="text-purple-300 text-sm font-medium bg-orange-100/20 px-2 rounded border border-purple-200">
+                  PUT
+                </span>
+                , and{' '}
+                <span className="text-blue-300 text-sm font-medium bg-orange-100/20 px-2 rounded border border-blue-300">
+                  PATCH
+                </span>{' '}
+                methods
+              </div>
+            </div>
+          )}
         </div>
 
         <h4 className="font-semibold text-lg text-gray-200">Response</h4>
