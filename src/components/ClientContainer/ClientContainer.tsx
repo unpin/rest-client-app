@@ -6,12 +6,19 @@ import MethodDropdown, {
 import RequestBar from '@/components/RequestBar/RequestBar';
 import { useRouter } from '@/i18n/navigation';
 import { useSearchParams } from 'next/navigation';
-import { FormEvent, useRef, useState } from 'react';
+import { FormEvent, useMemo, useRef, useState } from 'react';
 import { MagicWand, Trash } from '../Icon/Icon';
 import { Editor } from '@monaco-editor/react';
 import type * as monaco from 'monaco-editor';
+import CodegenSelector from '@/components/CodegenSelector/CodegenSelector';
+import {
+  Request as PostmanRequest,
+  RequestDefinition,
+} from 'postman-collection';
+
 import { ProxyResponseData } from '@/app/api/proxy/route';
 import ProxyResponseView from '../ProxyResponseContainer/ProxyResponseContainer';
+
 
 type ClientContainerProps = {
   initialMethod: Method;
@@ -199,6 +206,21 @@ export default function ClientContainer({
     setBody(value);
   };
 
+  const request = useMemo(() => {
+    const reg: RequestDefinition = {
+      url,
+      method: 'POST',
+      header: headers,
+      body: body
+        ? {
+            mode: 'raw',
+            raw: body,
+          }
+        : undefined,
+    };
+    return new PostmanRequest(reg);
+  }, [url, headers, body, bodyMode]);
+
   return (
     <div className="max-w-6xl mx-auto min-h-[300px] p-4 rounded bg-gray-900">
       <div className="rounded border border-gray-800 ">
@@ -262,7 +284,10 @@ export default function ClientContainer({
             ))}
           </tbody>
         </table>
-
+        <h3 className="font-semibold text-lg text-gray-200 my-2">
+          Code generation
+        </h3>
+        <CodegenSelector request={request as PostmanRequest} />
         <h3 className="font-semibold text-lg text-gray-200">Body</h3>
         <div>
           <div className="flex flex-col gap-4">
@@ -313,9 +338,6 @@ export default function ClientContainer({
             )}
           </div>
         </div>
-
-        <h3 className="font-semibold text-lg text-gray-200">Code examples</h3>
-        <div>{/* TODO: Code examples */}</div>
 
         <h4 className="font-semibold text-lg text-gray-200">Response</h4>
         {isLoading ? (
