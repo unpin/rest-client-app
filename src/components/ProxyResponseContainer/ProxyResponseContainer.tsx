@@ -55,13 +55,13 @@ export default function ProxyResponseView({
           </div>
         </div>
         {view === 'body' ? (
-          <pre className="text-sm bg-gray-800 p-2 rounded-lg overflow-auto max-h-128">
+          <pre className="text-sm bg-gray-800 p-2 rounded-lg overflow-auto max-h-128 whitespace-pre-wrap break-all">
             {typeof response.responseBody === 'object'
               ? JSON.stringify(response.responseBody, null, 2)
               : response.responseBody}
           </pre>
         ) : (
-          <pre className="text-sm bg-gray-800 p-2 rounded-lg overflow-auto max-h-128">
+          <pre className="text-sm bg-gray-800 p-2 rounded-lg overflow-auto max-h-128 whitespace-pre-wrap break-all">
             {JSON.stringify(response.responseHeaders, null, 2)}
           </pre>
         )}
