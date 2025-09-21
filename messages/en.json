@@ -1,0 +1,75 @@
+{
+  "MainPage": {
+    "title": "Welcome to REST Client App",
+    "titleLogin": "Welcome back",
+    "subtitle": "Please sign in or sign up to continue"
+  },
+  "Auth": {
+    "login": {
+      "title": "Sign In",
+      "subtitle": "Welcome back! Please sign in",
+      "emailLabel": "Email",
+      "passwordLabel": "Password",
+      "submit": "Sign In",
+      "noAccount": "Don't have an account?",
+      "goToRegister": "Sign Up"
+    },
+    "register": {
+      "title": "Sign Up",
+      "subtitle": "Create a new account",
+      "confirmPasswordLabel": "Confirm Password",
+      "submit": "Sign Up",
+      "hasAccount": "Already have an account?",
+      "goToLogin": "Sign In"
+    },
+    "errors": {
+      "email": "Please enter a valid email address",
+      "passwordMin": "Password must be at least 8 characters long",
+      "passwordEmpty": "Password is required",
+      "passwordMax": "Password must not exceed 20 characters",
+      "passwordComplexity": "Password must include uppercase, lowercase, number, and special character",
+      "authFailed": "Authentication failed: {message}",
+      "invalid-credential": "Wrong username/password ",
+      "too-many-requests": "Too many login attempts. Your account has been temporarily disabled. Please try again later or reset your password.",
+      "email-already-in-use": "This email address is already registered. Use another one or log in to your existing account."
+    },
+    "common": {
+      "logout": "Sign Out",
+      "main": "Main Page"
+    }
+  },
+  "Client": {
+    "headers": "Headers",
+    "addHeader": "Add header",
+    "table": {
+      "key": "Key",
+      "value": "Value",
+      "actions": "",
+      "text": "Text"
+    },
+    "codegen": "Code generation",
+    "body": "Body",
+    "bodyOnlyFor": "A request body is only used for",
+    "methods": {
+      "post": "POST",
+      "put": "PUT",
+      "patch": "PATCH"
+    },
+    "prettify": "Prettify",
+    "response": "Response",
+    "loading": "Loading...",
+    "emptyResponse": "Enter the URL and click SEND to get a response"
+  },
+  "RequestBar": {
+    "placeholder": "Enter request URL...",
+    "send": "Send"
+  },
+  "Codegen": {
+    "chooseLanguage": "Choose language",
+    "generate": "Generate",
+    "examples": "Code examples",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "placeholder": "Code Example"
+  }
+}
