@@ -1,7 +1,7 @@
 'use client';
 import { ProxyResponseData } from '@/app/api/proxy/route';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
-import { useRouter } from '@/i18n/navigation';
+import { Link, useRouter } from '@/i18n/navigation';
 
 const getStatusColor = (status: number) => {
   if (status >= 500) return 'text-red-400';
@@ -117,7 +117,10 @@ export default function HistoryPage() {
             ))
         ) : (
           <div className="text-center text-gray-500 py-16">
-            Your request history is empty.
+            Your request history is empty.{' '}
+            <Link className="text-blue-400" href={'/client'}>
+              Go to Client
+            </Link>
           </div>
         )}
       </div>
