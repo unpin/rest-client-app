@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function UnauthorizedLayout({ children }: PropsWithChildren) {
-  return { children };
+  return children;
 }
