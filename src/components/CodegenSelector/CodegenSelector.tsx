@@ -6,6 +6,7 @@ import { getLanguageList } from 'postman-code-generators';
 import { useState } from 'react';
 import { createCodeSample } from '@/utils/codegen/generator';
 import { Request as PostmanRequest } from 'postman-collection';
+import { useTranslations } from 'next-intl';
 
 type FormValues = {
   language: string;
@@ -22,6 +23,7 @@ export default function CodegenSelector({ request }: CodegenSelectorProps) {
   const [copied, setCopied] = useState(false);
   const { register } = useForm<FormValues>();
   const languages = getLanguageList();
+  const t = useTranslations('Codegen');
 
   const generateCode = async () => {
     const selected = languages.find((obj) => obj.label === selectedLanguage);
@@ -54,7 +56,7 @@ export default function CodegenSelector({ request }: CodegenSelectorProps) {
             <SelectField
               onChange={(e) => setSelectedLanguage(e.target.value)}
               value={selectedLanguage}
-              label="Choose language"
+              label={t('chooseLanguage')}
               name="language"
               options={languages.map((lang) => lang.label)}
               register={register('language')}
@@ -72,7 +74,7 @@ export default function CodegenSelector({ request }: CodegenSelectorProps) {
   }
 `}
             >
-              Generate
+              {t('generate')}
             </button>
           </div>
         </div>
@@ -80,7 +82,7 @@ export default function CodegenSelector({ request }: CodegenSelectorProps) {
         <div className="flex-1 flex flex-col">
           <div className="flex items-center justify-between mb-2">
             <h4 className="font-semibold text-sm text-gray-200">
-              Code examples
+              {t('examples')}
             </h4>
             <button
               onClick={copyCode}
@@ -89,14 +91,14 @@ export default function CodegenSelector({ request }: CodegenSelectorProps) {
              hover:bg-gray-600 disabled:opacity-40 disabled:cursor-not-allowed
              cursor-pointer transition-colors"
             >
-              {copied ? 'Copied!' : 'Copy'}
+              {copied ? t('copied') : t('copy')}
             </button>
           </div>
 
           <textarea
             className="flex-1 min-h-[200px] rounded-md border border-gray-300 text-sm text-gray-100 shadow-sm
                        dark:bg-gray-800 dark:border-neutral-700 dark:text-gray-100 resize-none"
-            placeholder="Code Example"
+            placeholder={t('examples')}
             value={code}
             readOnly
           />

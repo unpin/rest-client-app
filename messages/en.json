@@ -37,5 +37,39 @@
       "logout": "Sign Out",
       "main": "Main Page"
     }
+  },
+  "Client": {
+    "headers": "Headers",
+    "addHeader": "Add header",
+    "table": {
+      "key": "Key",
+      "value": "Value",
+      "actions": "",
+      "text": "Text"
+    },
+    "codegen": "Code generation",
+    "body": "Body",
+    "bodyOnlyFor": "A request body is only used for",
+    "methods": {
+      "post": "POST",
+      "put": "PUT",
+      "patch": "PATCH"
+    },
+    "prettify": "Prettify",
+    "response": "Response",
+    "loading": "Loading...",
+    "emptyResponse": "Enter the URL and click SEND to get a response"
+  },
+  "RequestBar": {
+    "placeholder": "Enter request URL...",
+    "send": "Send"
+  },
+  "Codegen": {
+    "chooseLanguage": "Choose language",
+    "generate": "Generate",
+    "examples": "Code examples",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "placeholder": "Code Example"
   }
 }

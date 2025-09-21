@@ -1,4 +1,5 @@
 import { UseFormRegisterReturn } from 'react-hook-form';
+import { useTranslations } from 'next-intl';
 
 interface SelectFieldProps {
   label: string;
@@ -21,6 +22,7 @@ export default function SelectField({
   onChange,
   value,
 }: SelectFieldProps) {
+  const t = useTranslations('Codegen');
   return (
     <div className="flex flex-col space-y-2 w-48">
       <label htmlFor={id} className="font-semibold text-sm text-gray-100">
@@ -38,7 +40,7 @@ export default function SelectField({
         value={value}
       >
         <option value="" disabled hidden>
-          {defaultValue || 'Select language'}
+          {defaultValue || t('chooseLanguage')}
         </option>
         {options.map((opt) => (
           <option key={opt} value={opt}>

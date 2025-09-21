@@ -20,6 +20,7 @@ import ProxyResponseView from '../ProxyResponseContainer/ProxyResponseContainer'
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { useLocale } from 'next-intl';
 import { useRequestHistory } from '@/hooks/useRequestHistory';
+import { useTranslations } from 'next-intl';
 
 type ClientContainerProps = {
   initialMethod: string;
@@ -288,6 +289,7 @@ export default function ClientContainer({
     };
     return new PostmanRequest(reg);
   }, [url, headers, body, bodyMode, variableMap]);
+  const t = useTranslations('Client');
 
   return (
     <div className="max-w-6xl mx-auto min-h-[300px] p-4 rounded-lg bg-gray-900">
@@ -308,19 +310,21 @@ export default function ClientContainer({
       </div>
       <div className="flex flex-col mt-4 gap-4">
         <div className="flex items-center gap-4">
-          <h3 className="font-semibold text-lg text-gray-200">Headers</h3>
+          <h3 className="font-semibold text-lg text-gray-200">
+            {t('headers')}
+          </h3>
           <button
             onClick={addHeader}
             className="py-1 text-white self-start text-sm font-semibold rounded-lg bg-blue-500 hover:bg-blue-400 px-6 cursor-pointer"
           >
-            Add header
+            {t('addHeader')}
           </button>
         </div>
         <table className="table">
           <thead className="table-header">
             <tr className="tr">
-              <th className="table-cell">Key</th>
-              <th className="table-cell">Value</th>
+              <th className="table-cell">{t('table.key')}</th>
+              <th className="table-cell">{t('table.value')}</th>
               <th className="table-cell"></th>
             </tr>
           </thead>
@@ -331,7 +335,7 @@ export default function ClientContainer({
                   <input
                     value={header.key}
                     onChange={(e) => updateHeader(idx, 'key', e.target.value)}
-                    placeholder="Key"
+                    placeholder={t('table.key')}
                     className="form-input"
                   />
                 </td>
@@ -339,7 +343,7 @@ export default function ClientContainer({
                   <input
                     value={header.value}
                     onChange={(e) => updateHeader(idx, 'value', e.target.value)}
-                    placeholder="Value"
+                    placeholder={t('table.value')}
                     className="form-input"
                   />
                 </td>
@@ -358,10 +362,10 @@ export default function ClientContainer({
           </tbody>
         </table>
         <h3 className="font-semibold text-lg text-gray-200 my-2">
-          Code generation
+          {t('codegen')}
         </h3>
         <CodegenSelector request={request as PostmanRequest} />
-        <h3 className="font-semibold text-lg text-gray-200">Body</h3>
+        <h3 className="font-semibold text-lg text-gray-200">{t('body')}</h3>
         <div>
           {methodHasBody(selectedMethod) ? (
             <div className="flex flex-col gap-4">
@@ -378,7 +382,7 @@ export default function ClientContainer({
                   className={`button-body-mode ${bodyMode === 'text' ? 'bg-blue-500 hover:bg-blue-400' : 'hover:bg-gray-700'}`}
                   onClick={() => handleBodyModeChange('text')}
                 >
-                  Text
+                  {t('text')}
                 </button>
               </div>
               <div
@@ -403,7 +407,7 @@ export default function ClientContainer({
                     onClick={prettifyBody}
                   >
                     <MagicWand />
-                    Prettify
+                    {t('prettify')}
                   </button>
                   <p className="text-red-400 text-sm">
                     {prettifyError && prettifyError}
@@ -414,13 +418,13 @@ export default function ClientContainer({
           ) : (
             <div className="border border-gray-800 rounded-xl">
               <div className="text-gray-400 text-center p-8">
-                A request body is only used for{' '}
+                {t('bodyOnlyFor')}{' '}
                 <span className="text-orange-300 text-sm font-medium bg-orange-300/10 px-2 py-1 rounded-lg border border-orange-200">
                   POST
                 </span>
                 ,{' '}
                 <span className="text-purple-300 text-sm font-medium bg-orange-300/10 px-2 py-1 rounded-lg border border-purple-200">
-                  PUT
+                  {t('methods.put')}
                 </span>
                 , and{' '}
                 <span className="text-blue-300 text-sm font-medium bg-orange-300/10 px-2 py-1 rounded-lg border border-blue-300">
@@ -432,7 +436,7 @@ export default function ClientContainer({
           )}
         </div>
 
-        <h4 className="font-semibold text-lg text-gray-200">Response</h4>
+        <h4 className="font-semibold text-lg text-gray-200">{t('response')}</h4>
         {isLoading ? (
           <div className="text-gray-400">Loading...</div>
         ) : response ? (
@@ -440,7 +444,7 @@ export default function ClientContainer({
         ) : (
           <div className="border border-gray-800 rounded-xl">
             <div className="text-gray-400 text-center p-8">
-              Enter the URL and click SEND to get a response
+              {t('emptyResponse')}
             </div>
           </div>
         )}
