@@ -19,7 +19,7 @@ export default function AuthBlock() {
             : `${t('MainPage.titleLogin')} ${user.email ?? ''}`}
         </h1>
 
-        {!user && (
+        {!user ? (
           <div className="flex flex-col gap-4 w-full">
             <p className="text-gray-600 mb-8">{t('MainPage.subtitle')}</p>
             <Link href="/auth/signin" className="btn-action">
@@ -28,6 +28,20 @@ export default function AuthBlock() {
             <Link href="/auth/signup" className="btn-action">
               {t('Auth.register.submit')}
             </Link>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-4 w-full">
+            <div className="flex gap-4 justify-center">
+              <Link href="/client" className="btn-action">
+                REST Client
+              </Link>
+              <Link href="/history" className="btn-action">
+                History
+              </Link>
+              <Link href="/variables" className="btn-action">
+                Variables
+              </Link>
+            </div>
           </div>
         )}
       </div>
