@@ -54,7 +54,7 @@ export default function MethodDropdown({
   return (
     <div className="relative" ref={dropdownRef}>
       <button
-        className="button-method flex items-center gap-2 rounded hover:bg-gray-800 py-2 px-4 font-bold"
+        className="button-method flex items-center gap-2 rounded-lg hover:bg-gray-800 py-2 px-4 font-bold"
         onClick={() => setIsOpen(!isOpen)}
       >
         <span className={`text-sm ${selected.toLowerCase()}`}>{selected}</span>
@@ -63,7 +63,7 @@ export default function MethodDropdown({
         </span>
       </button>
       {isOpen && (
-        <ul className="absolute z-10 mt-2 bg-gray-900 rounded methods-list">
+        <ul className="absolute z-10 mt-2 bg-gray-900 rounded-lg methods-list">
           {methods.map((method) => (
             <li
               key={method}

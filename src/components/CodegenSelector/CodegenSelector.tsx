@@ -85,7 +85,7 @@ export default function CodegenSelector({ request }: CodegenSelectorProps) {
             <button
               onClick={copyCode}
               disabled={!code}
-              className="px-3 py-1 text-xs font-medium rounded bg-gray-700 text-gray-200
+              className="px-3 py-1 text-xs font-medium rounded-lg bg-gray-700 text-gray-200
              hover:bg-gray-600 disabled:opacity-40 disabled:cursor-not-allowed
              cursor-pointer transition-colors"
             >
