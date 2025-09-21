@@ -22,13 +22,13 @@ export default async function RootLayout({
   const { locale } = await params;
   return (
     <html lang={locale}>
-      <body className="pb-[80px]">
-        <AppProviders>
+      <AppProviders>
+        <body className="grid min-h-screen w-full grid-rows-[auto_1fr_auto] gap-4">
           <StickyHeader />
-          {children}
+          <main className="">{children}</main>
           <Footer />
-        </AppProviders>
-      </body>
+        </body>
+      </AppProviders>
     </html>
   );
 }

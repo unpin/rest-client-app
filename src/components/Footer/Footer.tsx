@@ -21,13 +21,13 @@ const team = [
 
 export default function Footer() {
   return (
-    <footer className="fixed bottom-0 left-0 right-0 z-50 bg-gray-100 dark:bg-neutral-900 shadow-inner">
-      <div className="flex items-center justify-between gap-4 px-6 h-20">
-        <div className="flex flex-col">
-          <span className="text-xs uppercase tracking-wide text-gray-400 dark:text-gray-500">
+    <footer className="bg-gray-900 shadow-inner">
+      <div className="max-w-6xl mx-auto flex items-center gap-4 py-8">
+        <div className="flex flex-1 flex-col gap-4">
+          <span className="text-xs uppercase tracking-wide text-gray-500">
             Developers
           </span>
-          <div className="flex space-x-6 text-sm text-gray-600 dark:text-gray-300">
+          <div className="flex space-x-6 text-sm text-gray-300">
             {team.map((member) => (
               <Link
                 href={member.github}
@@ -41,10 +41,16 @@ export default function Footer() {
             ))}
           </div>
         </div>
-        <p className="text-gray-500 dark:text-gray-400">2025</p>
-        <Link href="/">
-          <Image width={48} height={48} src="/rss-logo.svg" alt="RS_logo" />
-        </Link>
+
+        <div className="flex-1 text-center text-gray-400">
+          <p>2025</p>
+        </div>
+
+        <div className="flex flex-1 justify-end">
+          <Link href="/">
+            <Image width={48} height={48} src="/rss-logo.svg" alt="RS_logo" />
+          </Link>
+        </div>
       </div>
     </footer>
   );
