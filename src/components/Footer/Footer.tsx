@@ -22,7 +22,7 @@ const team = [
 export default function Footer() {
   return (
     <footer className="bg-gray-900 shadow-inner">
-      <div className="max-w-6xl mx-auto flex items-center gap-4 py-8">
+      <div className="max-w-6xl mx-auto flex items-center gap-4 py-8 px-4">
         <div className="flex flex-1 flex-col gap-4">
           <span className="text-xs uppercase tracking-wide text-gray-500">
             Developers

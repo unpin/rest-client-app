@@ -9,7 +9,7 @@ type HeaderProps = {
 export default function Header({ scrolled }: HeaderProps) {
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-300 py-2
+      className={`sticky top-0 z-50 transition-all duration-300 p-4
         ${scrolled ? 'bg-gray-800 shadow-md' : 'bg-gray-900'}
         bg-gray-900
       `}
