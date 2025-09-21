@@ -11,7 +11,7 @@ export default function AuthBlock() {
   if (loading) return <p>Loading...</p>;
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center bg-gray-100">
       <div className="form text-center">
         <h1 className="text-3xl font-bold text-gray-800 mb-6">
           {!user

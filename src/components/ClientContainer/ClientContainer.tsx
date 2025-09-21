@@ -19,7 +19,6 @@ import {
 import { ProxyResponseData } from '@/app/api/proxy/route';
 import ProxyResponseView from '../ProxyResponseContainer/ProxyResponseContainer';
 
-
 type ClientContainerProps = {
   initialMethod: Method;
   initialUrl: string;

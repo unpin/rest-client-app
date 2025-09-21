@@ -90,6 +90,7 @@ export default function AuthForm({ form }: AuthFormProps) {
         <InputField
           label={t('login.passwordLabel')}
           id="password"
+          type="password"
           autoComplete={form === 'signIn' ? 'current-password' : 'new-password'}
           register={register('password')}
         />

@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="en">
-      <body>
+      <body className="grid min-h-screen grid-rows-[auto_1fr_auto]">
         <AppProviders>
           <StickyHeader />
           {children}

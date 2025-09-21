@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function UnauthorizedLayout({ children }: PropsWithChildren) {
   return (
-    <section className="min-h-screen flex items-center justify-center bg-gray-100">
+    <section className="flex items-center justify-center bg-gray-100">
       {children}
     </section>
   );

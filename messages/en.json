@@ -1,7 +1,7 @@
 {
   "MainPage": {
     "title": "Welcome to REST Client App",
-    "titleLogin": "Welcome back",
+    "titleLogin": "Welcome!",
     "subtitle": "Please sign in or sign up to continue"
   },
   "Auth": {

@@ -7,8 +7,8 @@ export default function ErrorForm({ message }: FormErrorProps) {
     return <div className="min-h-[1.5rem]" />;
   }
   return (
-    <div className="text-red-600 text-xs min-h-[1.5rem] max-h-[2rem] overflow-y-auto">
-      <p className="leading-snug">{message}</p>
+    <div className="text-red-600 text-xs overflow-y-auto">
+      <p className="leading-snug max-w-xs break-words">{message}</p>
     </div>
   );
 }
