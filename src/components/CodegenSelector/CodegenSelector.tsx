@@ -99,7 +99,6 @@ export default function CodegenSelector({ request }: CodegenSelectorProps) {
             className="flex-1 min-h-[200px] rounded-md border border-gray-300 text-sm text-gray-100 shadow-sm
                        dark:bg-gray-800 dark:border-neutral-700 dark:text-gray-100 resize-none"
             placeholder={t('examples')}
-
             value={code}
             readOnly
           />

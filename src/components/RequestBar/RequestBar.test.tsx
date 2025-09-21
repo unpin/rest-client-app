@@ -2,6 +2,10 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import RequestBar from './RequestBar';
 
+jest.mock('next-intl', () => ({
+  useTranslations: () => (key: string) => key,
+}));
+
 describe('RequestBar', () => {
   const mockOnUrlChange = jest.fn();
   const mockOnSend = jest.fn((e) => e.preventDefault());
@@ -19,7 +23,7 @@ describe('RequestBar', () => {
         urlError={null}
       />
     );
-    const inputElement = screen.getByPlaceholderText('Enter request URL...');
+    const inputElement = screen.getByPlaceholderText('placeholder');
     expect(inputElement).toBeInTheDocument();
     expect(inputElement).toHaveValue('https://api.example.com');
   });
@@ -33,7 +37,7 @@ describe('RequestBar', () => {
         urlError={null}
       />
     );
-    const inputElement = screen.getByPlaceholderText('Enter request URL...');
+    const inputElement = screen.getByPlaceholderText('placeholder');
     fireEvent.change(inputElement, { target: { value: 'https://new.url' } });
     expect(mockOnUrlChange).toHaveBeenCalledWith('https://new.url');
   });
@@ -61,7 +65,7 @@ describe('RequestBar', () => {
         urlError="Invalid URL"
       />
     );
-    const inputElement = screen.getByPlaceholderText('Enter request URL...');
+    const inputElement = screen.getByPlaceholderText('placeholder');
     expect(inputElement).toHaveClass('text-red-300');
   });
 
@@ -74,7 +78,7 @@ describe('RequestBar', () => {
         urlError={null}
       />
     );
-    const inputElement = screen.getByPlaceholderText('Enter request URL...');
+    const inputElement = screen.getByPlaceholderText('placeholder');
     expect(inputElement).not.toHaveClass('text-red-300');
   });
 });

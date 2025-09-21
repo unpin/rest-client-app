@@ -2,6 +2,13 @@ import { render, screen, fireEvent, renderHook } from '@testing-library/react';
 import SelectField from './SelectField';
 import { useForm, UseFormRegister, FieldValues, Path } from 'react-hook-form';
 import { ChangeEventHandler } from 'react';
+import { useTranslations } from 'next-intl';
+
+jest.mock('next-intl', () => ({
+  useTranslations: jest.fn(),
+}));
+
+const mockUseTranslations = useTranslations as jest.Mock;
 
 type TestFormProps<T extends FieldValues> = {
   register?: UseFormRegister<T>;
@@ -27,6 +34,10 @@ const TestForm = <T extends FieldValues>({
 );
 
 describe('SelectField', () => {
+  beforeEach(() => {
+    mockUseTranslations.mockReturnValue((key: string) => key);
+  });
+
   it('should render a label and a select with options', () => {
     render(<SelectField label="My Select" options={['A', 'B', 'C']} />);
 

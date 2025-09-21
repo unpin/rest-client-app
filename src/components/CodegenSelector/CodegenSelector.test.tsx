@@ -4,6 +4,10 @@ import { Request as PostmanRequest } from 'postman-collection';
 import * as codegen from 'postman-code-generators';
 import * as generator from '@/utils/codegen/generator';
 
+jest.mock('next-intl', () => ({
+  useTranslations: () => (key: string) => key,
+}));
+
 jest.mock('postman-code-generators', () => ({
   getLanguageList: jest.fn(),
 }));
@@ -51,7 +55,7 @@ describe('CodegenSelector', () => {
 
   it('should render the language selector and generate button', () => {
     render(<CodegenSelector request={mockRequest} />);
-    expect(screen.getByLabelText('Choose language')).toBeInTheDocument();
+    expect(screen.getByLabelText('chooseLanguage')).toBeInTheDocument();
     expect(
       screen.getByRole('button', { name: /generate/i })
     ).toBeInTheDocument();
@@ -64,7 +68,7 @@ describe('CodegenSelector', () => {
 
   it('should enable the generate button when a language is selected', () => {
     render(<CodegenSelector request={mockRequest} />);
-    const languageSelect = screen.getByLabelText('Choose language');
+    const languageSelect = screen.getByLabelText('chooseLanguage');
     fireEvent.change(languageSelect, { target: { value: 'JavaScript' } });
     expect(screen.getByRole('button', { name: /generate/i })).toBeEnabled();
   });
@@ -72,7 +76,7 @@ describe('CodegenSelector', () => {
   it('should generate and display a code snippet', async () => {
     render(<CodegenSelector request={mockRequest} />);
 
-    const languageSelect = screen.getByLabelText('Choose language');
+    const languageSelect = screen.getByLabelText('chooseLanguage');
     fireEvent.change(languageSelect, { target: { value: 'JavaScript' } });
 
     const generateButton = screen.getByRole('button', { name: /generate/i });
@@ -86,7 +90,7 @@ describe('CodegenSelector', () => {
       );
     });
 
-    const codeTextarea = screen.getByPlaceholderText('Code Example');
+    const codeTextarea = screen.getByPlaceholderText('examples');
     await waitFor(() =>
       expect(codeTextarea).toHaveValue('Generated code snippet')
     );
@@ -95,13 +99,13 @@ describe('CodegenSelector', () => {
   it('should copy the code to the clipboard', async () => {
     render(<CodegenSelector request={mockRequest} />);
 
-    fireEvent.change(screen.getByLabelText('Choose language'), {
+    fireEvent.change(screen.getByLabelText('chooseLanguage'), {
       target: { value: 'JavaScript' },
     });
     fireEvent.click(screen.getByRole('button', { name: /generate/i }));
 
     await waitFor(() => {
-      expect(screen.getByPlaceholderText('Code Example')).toHaveValue(
+      expect(screen.getByPlaceholderText('examples')).toHaveValue(
         'Generated code snippet'
       );
     });
@@ -113,7 +117,7 @@ describe('CodegenSelector', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByRole('button', { name: /copied!/i })
+        screen.getByRole('button', { name: /copied/i })
       ).toBeInTheDocument();
     });
 
