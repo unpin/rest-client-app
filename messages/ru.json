@@ -37,5 +37,39 @@
       "logout": "Выход",
       "main": "Главная страница"
     }
+  },
+  "Client": {
+    "headers": "Заголовки",
+    "addHeader": "Добавить заголовок",
+    "table": {
+      "key": "Ключ",
+      "value": "Значение",
+      "actions": ""
+    },
+    "text": "Текст",
+    "codegen": "Генерация кода",
+    "body": "Тело запроса",
+    "bodyOnlyFor": "Тело запроса используется только для",
+    "methods": {
+      "post": "POST",
+      "put": "PUT",
+      "patch": "PATCH"
+    },
+    "prettify": "Форматировать",
+    "response": "Ответ",
+    "loading": "Загрузка...",
+    "emptyResponse": "Введите URL и нажмите ОТПРАВИТЬ, чтобы получить ответ"
+  },
+  "RequestBar": {
+    "placeholder": "Введите URL запроса...",
+    "send": "Отправить"
+  },
+  "Codegen": {
+    "chooseLanguage": "Выберите язык",
+    "generate": "Сгенерировать",
+    "examples": "Примеры кода",
+    "copy": "Копировать",
+    "copied": "Скопировано!",
+    "placeholder": "Пример кода"
   }
 }
