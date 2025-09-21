@@ -25,16 +25,19 @@ export default function SelectField({
   const t = useTranslations('Codegen');
   return (
     <div className="flex flex-col space-y-2 w-48">
-      <label htmlFor={id} className="font-semibold text-sm text-gray-100">
+      <label
+        htmlFor={id || name || label}
+        className="font-semibold text-sm text-gray-100"
+      >
         {label}
       </label>
       <select
-        id={id}
+        id={id || name || label}
         name={name}
         defaultValue={defaultValue}
-        className="h-[25px] rounded-md border border-gray-300 bg-white px-3 text-sm shadow-sm
+        className="h-[25px] rounded-md border px-3 text-sm shadow-sm
              focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
-             dark:bg-gray-800 dark:border-neutral-700 dark:text-gray-100 "
+             bg-gray-800 border-neutral-700 text-gray-100 "
         {...register}
         onChange={onChange}
         value={value}

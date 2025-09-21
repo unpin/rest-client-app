@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "format:fix": "prettier --write .",
     "prepare": "husky",
-    "test": "jest"
+    "test": "jest",
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
@@ -51,6 +52,7 @@
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",
     "typescript": "^5",
-    "typescript-eslint": "^8.42.0"
+    "typescript-eslint": "^8.42.0",
+    "whatwg-fetch": "^3.6.20"
   }
 }

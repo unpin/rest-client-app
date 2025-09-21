@@ -30,7 +30,7 @@ export default function InputField(props: InputFieldProps) {
 
   return (
     <div className="flex flex-col space-y-1">
-      <label htmlFor={inputId} className="text-sm text-gray-700">
+      <label htmlFor={inputId} className="text-sm text-gray-400">
         {label}
       </label>
       <input

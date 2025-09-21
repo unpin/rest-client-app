@@ -11,13 +11,27 @@ export default function AuthBlock() {
   if (loading) return <p>Loading...</p>;
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center ">
       <div className="form text-center">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">
+        <h1 className="text-3xl font-bold text-gray-300 mb-6">
           {!user
             ? t('MainPage.title')
             : `${t('MainPage.titleLogin')} ${user.email ?? ''}`}
         </h1>
+
+        {user && (
+          <div className="flex flex-col gap-4">
+            <Link className="text-blue-400" href={'/client'}>
+              Client
+            </Link>
+            <Link className="text-blue-400" href={'/history'}>
+              History
+            </Link>
+            <Link className="text-blue-400" href={'/variables'}>
+              Variables
+            </Link>
+          </div>
+        )}
 
         {!user && (
           <div className="flex flex-col gap-4 w-full">
